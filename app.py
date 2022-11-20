@@ -2,6 +2,7 @@ from flask import Flask, send_from_directory
 from flask_restful import Api, Resource, reqparse
 #from flask_cors import CORS #comment this on deployment
 from api.HelloApiHandler import HelloApiHandler
+from load_data import load_data
 
 app = Flask(__name__, static_url_path='', static_folder='frontend/build')
 #CORS(app) #comment this on deployment
@@ -17,4 +18,5 @@ api.add_resource(HelloApiHandler, '/flask/hello')
 
 
 if __name__ == "__main__":
+    load_data()
     app.run()
