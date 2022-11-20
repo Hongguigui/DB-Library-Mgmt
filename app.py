@@ -6,6 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from marshmallow_sqlalchemy import ModelSchema
 from marshmallow import fields
 import pymysql
+from load_data import load_data
 
 app = Flask(__name__, static_url_path='', static_folder='frontend/build')
 #CORS(app) #comment this on deployment
@@ -71,4 +72,5 @@ api.add_resource(HelloApiHandler, '/flask/hello')
 
 
 if __name__ == "__main__":
+    load_data()
     app.run()
