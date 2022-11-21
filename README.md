@@ -22,3 +22,9 @@ The program can be run by
 ```
 python app.py
 ```
+Run the frontend
+```
+ cd frontend
+ npm install // Only need to be run once
+ npm start
+```
