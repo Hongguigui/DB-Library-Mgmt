@@ -12,7 +12,7 @@ There will also be an account summary that records the monthly money in (funding
 
 [Library Management System Proposal](https://github.com/Hongguigui/DB-Library-Mgmt/blob/main/DB%20Proposal.pdf)
 
-## Prerequisites
+## Prerequisites 
 All the requirements for the system can install by 
 ```
 pip install -r requirements.txt
