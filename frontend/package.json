@@ -16,7 +16,10 @@
     "web-vitals": "^0.2.4",
     "gsap": "3.11.3",
     "react-s-alert-v3": "1.4.2",
-    "better-react-spinkit": "2.0.6"
+    "better-react-spinkit": "2.0.6",
+    "react-bootstrap": "2.6.0",
+    "@fortawesome/free-solid-svg-icons": "6.2.1",
+    "@fortawesome/react-fontawesome": "0.2.0"
   },
   "scripts": {
     "start": "react-scripts start",
