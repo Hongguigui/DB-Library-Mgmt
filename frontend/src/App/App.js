@@ -6,8 +6,9 @@ import 'react-s-alert-v3/dist/s-alert-css-effects/slide.css';
 import AppHeader from "../common/header";
 import Home from '../home/Home';
 import NotFound from '../common/NotFound';
-import { BrowserRouter, Route, Switch} from "react-router-dom";
+import {Route, Switch} from "react-router-dom";
 import LoadingIndicator from "../common/LoadingIndicator";
+import BookList from "../User/book/BookList";
 
 // Edited by Xiao Lin
 // Render the app, which has a header and a body
@@ -32,12 +33,11 @@ class App extends Component {
                     <AppHeader/>
                 </div>
                 <div className="app-body">
-                    <BrowserRouter>
-                        <Switch>
+                    <Switch>
                         <Route exact path="/" component={Home}/>
+                        <Route exact path="/book" component={BookList}/>
                         <Route component={NotFound}/>
                     </Switch>
-                    </BrowserRouter>
                 </div>
                 <Alert stack={{limit: 3}}
                        timeout={3000}
