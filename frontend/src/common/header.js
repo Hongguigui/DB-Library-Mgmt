@@ -13,9 +13,7 @@ class AppHeader extends Component {
                 <div className="App-header-left">
                     <img src={book_logo} className="Project-logo" alt="project_dove_logo" width={100} length={100}/>
                     <div className="app-branding">
-                        <BrowserRouter>
-                            <Link to="/" className="app-title">{THE_APP_NAME}</Link>
-                        </BrowserRouter>
+                        <Link to="/" className="app-title">{THE_APP_NAME}</Link>
                     </div>
                 </div>
                 <div className="App-header-right">
@@ -23,9 +21,7 @@ class AppHeader extends Component {
                         <nav className="app-nav">
                             <ul>
                                 <li>
-                                    <BrowserRouter>
-                                        <NavLink to="/book">Book List</NavLink>
-                                    </BrowserRouter>
+                                    <NavLink to="/book">Book List</NavLink>
                                 </li>
                                 <li>
                                     <a
