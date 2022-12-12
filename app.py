@@ -84,6 +84,7 @@ class BookListResource(Resource):
     #     db.session.commit()
     #     return post_schema.dump(new_post)
 
+
 @app.route("/", defaults={'path':''})
 def serve(path):
     return send_from_directory(app.static_folder,'index.html')
