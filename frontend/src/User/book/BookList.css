@@ -1,0 +1,63 @@
+/* Edited by Xiao Lin */
+.store-container {
+    padding-top: 30px;
+}
+
+.store-info {
+    text-align: center;
+}
+
+.button{
+    display:inline-block;
+    padding:0 0;
+    border:0.1em solid #FFFFFF;
+    margin:0 0.3em 0.3em 0;
+    border-radius:0.12em;
+    box-sizing: border-box;
+    text-decoration:none;
+    font-family:'Roboto',sans-serif;
+    font-weight:300;
+    color:#FFFFFF;
+    text-align:center;
+    transition: all 0.2s;
+}
+
+input[type=text]:focus {
+    border: 1px solid #555;
+}
+
+.time-container button{
+    padding:.35em 1.2em;
+}
+
+.button:hover{
+    color:#000000;
+    background-color:#FFFFFF;
+}
+
+.page-number{
+    float: left;
+    font-family: monospace;
+    color: #0275d8;
+    padding: 8px
+}
+
+.pagination-buttons{
+    float: right;
+}
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: center;
+    padding: 8px;
+    width: 600px;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
