@@ -70,10 +70,10 @@ book_schema = BookSchema()
 books_schema = BookSchema(many=True)
 
 
-class BookListResource(Resource):
-    def get(self):
-        books = Book.query.all()
-        return books_schema.dump(books)
+# class BookListResource(Resource):
+#     def get(self):
+#         books = Book.query.all()
+#         return books_schema.dump(books)
 
     # def post(self):
     #     new_post = Post(
@@ -90,19 +90,28 @@ def serve(path):
     return send_from_directory(app.static_folder,'index.html')
 
 
-# @app.route("/books")
-# def index():
-#     get_books = Book.query.all()
-#     return jsonify(get_books)
+@app.route("/books")
+def books():
     # get_books = Book.query.all()
-    # print(get_books)
-    # book_schema = BookSchema(many=False)
-    # books = book_schema.dump(get_books)
-    # return make_response(jsonify({"books": books}))
+    # return jsonify(get_books)
+    # get_books = Book.query.all()
+    # bookSchema = BookSchema(many=False)
+    # allBooks = bookSchema.dump(get_books)
+    # return make_response(jsonify({"books": allBooks}))
+    books = Book.query.all()
+    return books_schema.dump(books)
+
+
+ROWS_PER_PAGE = 5
+@app.route("/books/<pgSize>?<>", methods=['Get'])
+def paginateBooks(pgSize):
+    page = request.args.get('page', 1, type=int)
+    books = Book.query.paginate(page=page, per_page=pgSize)
+    return books_schema.dump(books)
 
 
 api.add_resource(HelloApiHandler, '/flask/hello')
-api.add_resource(BookListResource, '/books')
+# api.add_resource(BookListResource, '/books')
 
 
 if __name__ == "__main__":
