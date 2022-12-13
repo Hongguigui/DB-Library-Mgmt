@@ -1,6 +1,7 @@
+import paginator as paginator
 from flask import Flask, send_from_directory, request, jsonify, make_response
 from flask_restful import Api, Resource, reqparse
-#from flask_cors import CORS #comment this on deployment
+from flask_cors import CORS #comment this on deployment
 from api.HelloApiHandler import HelloApiHandler
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow_sqlalchemy import ModelSchema
@@ -8,10 +9,11 @@ from marshmallow import fields
 from flask_marshmallow import Marshmallow
 from pprint import pprint
 import pymysql
+
 # from load_data import load_data
 
 app = Flask(__name__)
-#CORS(app) #comment this on deployment
+CORS(app) #comment this on deployment
 api = Api(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost:3306/library'
@@ -28,9 +30,9 @@ class Book(db.Model):
     __tablename__ = "books"
     isbn13 = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(50))
-    authors = db.Column(db.String(50))
-    categories = db.Column(db.String(50))
-    thumbnail = db.Column(db.String(200))
+    authors = db.Column(db.String(500))
+    categories = db.Column(db.String(100))
+    thumbnail = db.Column(db.String(500))
     averageRating = db.Column(db.Float)
     yearPublished = db.Column(db.Integer)
 
@@ -92,22 +94,27 @@ def serve(path):
 
 @app.route("/books")
 def books():
-    # get_books = Book.query.all()
-    # return jsonify(get_books)
-    # get_books = Book.query.all()
-    # bookSchema = BookSchema(many=False)
-    # allBooks = bookSchema.dump(get_books)
-    # return make_response(jsonify({"books": allBooks}))
     books = Book.query.all()
     return books_schema.dump(books)
 
 
-ROWS_PER_PAGE = 5
-@app.route("/books?page=<currentPage>&size=<pgSize>", methods=['Get'])
-def paginateBooks(pgSize):
+@app.route("/books/page", methods=['Get'])
+def paginateBooks():
     page = request.args.get('page', 1, type=int)
-    books = Book.query.paginate(page=page, per_page=pgSize)
-    return books_schema.dump(books)
+    bookQuery = Book.query.paginate(page=page,per_page=5,error_out=False)
+    # # bookQuery = Book.query.paginate(page=currentPage, error_out=False, max_per_page=pgSize)
+    # result = dict(datas=bookQuery.items, total=bookQuery.total, current_page=bookQuery.page, per_page=bookQuery.per_page)
+    # print(page)
+    return books_schema.dump(bookQuery)
+
+
+@app.route("/books/<name>", methods=['Get'])
+def searchByName(name):
+    bookQuery = Book.query.filter_by(title=name).all()
+    # bookQuery = Book.query.paginate(page=currentPage, error_out=False, max_per_page=pgSize)
+    # print(page)
+    return books_schema.dump(bookQuery)
+    # return result
 
 
 api.add_resource(HelloApiHandler, '/flask/hello')

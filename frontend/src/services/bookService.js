@@ -9,7 +9,7 @@ class storeService{
 
     // Pageable endpoints
     getBooks =(currentPage, recordPerPage) =>{
-        return axios.get(`${apiUrlPrefix}/books?page=${currentPage}&size=${recordPerPage}`)
+        return axios.get(`${apiUrlPrefix}/books?page=${currentPage}/${recordPerPage}`)
     }
     bookSearch =(currentPage, recordPerPage, search) =>{
         return axios.get(`${apiUrlPrefix}/books?search=${search}&page=${currentPage}&size=${recordPerPage}`)
