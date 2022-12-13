@@ -103,7 +103,7 @@ def books():
 
 
 ROWS_PER_PAGE = 5
-@app.route("/books/<pgSize>?<>", methods=['Get'])
+@app.route("/books?page=<currentPage>&size=<pgSize>", methods=['Get'])
 def paginateBooks(pgSize):
     page = request.args.get('page', 1, type=int)
     books = Book.query.paginate(page=page, per_page=pgSize)
