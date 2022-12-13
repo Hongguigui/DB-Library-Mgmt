@@ -1,4 +1,4 @@
-import paginator as paginator
+# import paginator as paginator
 from flask import Flask, send_from_directory, request, jsonify, make_response
 from flask_restful import Api, Resource, reqparse
 from flask_cors import CORS #comment this on deployment
@@ -101,7 +101,7 @@ def books():
 @app.route("/books/page", methods=['Get'])
 def paginateBooks():
     page = request.args.get('page', 1, type=int)
-    bookQuery = Book.query.paginate(page=page,per_page=5,error_out=False)
+    bookQuery = Book.query.paginate(page=page,per_page=10,error_out=False)
     # # bookQuery = Book.query.paginate(page=currentPage, error_out=False, max_per_page=pgSize)
     # result = dict(datas=bookQuery.items, total=bookQuery.total, current_page=bookQuery.page, per_page=bookQuery.per_page)
     # print(page)
