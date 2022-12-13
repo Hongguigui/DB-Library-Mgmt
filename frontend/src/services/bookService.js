@@ -8,8 +8,8 @@ import {apiUrlPrefix, StoreApiUrl} from "../const";
 class storeService{
 
     // Pageable endpoints
-    getBooks =(currentPage, recordPerPage) =>{
-        return axios.get(`${apiUrlPrefix}/books?page=${currentPage}/${recordPerPage}`)
+    getBooks =(currentPage) =>{
+        return axios.get(`${apiUrlPrefix}/books/page?page=${currentPage}`)
     }
     bookSearch =(currentPage, recordPerPage, search) =>{
         return axios.get(`${apiUrlPrefix}/books?search=${search}&page=${currentPage}&size=${recordPerPage}`)

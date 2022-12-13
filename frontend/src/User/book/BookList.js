@@ -34,7 +34,6 @@ class BookList extends Component {
         this.state = {
             books: [],
             currentPage:1,
-            recordPerPage:6,
             search: '',
             id: ''
         }
@@ -51,39 +50,21 @@ class BookList extends Component {
     // Make the request to the endpoint to retrieve book list, and set the state with the response data
     // The response data is in the pageable format
     getBooksByPagination(currentPage){
-        currentPage=currentPage-1;
-        bookService.getBooks(currentPage, this.state.recordPerPage)
+        bookService.getBooks(currentPage)
         //axios.get("http://localhost:8080/book/?page="+currentPage+"&size="+this.state.recordPerPage)
             .then(response => response.data).then((data) =>{
             this.setState({
-                books:data.content,
-                totalPages:data.totalPages,
-                totalElements: data.totalElements,
-                currentPage: data.number+1
+                books:data,
             });
         });
     }
 
     // Display next page
     showNextPage = () =>{
-        if(this.state.currentPage < Math.ceil(this.state.totalElements/this.state.recordPerPage)){
-            this.getBooksByPagination(this.state.currentPage + 1);
-        }
-    };
-
-    // Display last page
-    showLastPage = () =>{
-        if(this.state.currentPage < Math.ceil(this.state.totalElements/this.state.recordPerPage)){
-            this.getBooksByPagination(Math.ceil(this.state.totalElements/this.state.recordPerPage));
-        }
-    };
-
-    // Display first page
-    showFirstPage = ()=>{
-        let firstPage = 1;
-        if(this.state.currentPage > firstPage){
-            this.getBooksByPagination(firstPage);
-        }
+        this.getBooksByPagination(this.state.currentPage + 1);
+        this.setState({
+            currentPage: this.state.currentPage + 1
+        })
     };
 
     // Display previous page
@@ -91,6 +72,9 @@ class BookList extends Component {
         let prevPage = 1
         if(this.state.currentPage > prevPage){
             this.getBooksByPagination(this.state.currentPage - prevPage);
+            this.setState({
+                currentPage: this.state.currentPage - 1
+            })
         }
     };
 
@@ -109,10 +93,7 @@ class BookList extends Component {
         //axios.get("http://localhost:8080/book/"+this.state.search+"?page="+currentPage+"&size="+this.state.recordPerPage)
             .then(response => response.data).then((data) =>{
             this.setState({
-                books:data.content,
-                totalPages:data.totalPages,
-                totalElements: data.totalElements,
-                currentPage: data.number+1
+                books:data
             });
         });
     };
@@ -166,6 +147,7 @@ class BookList extends Component {
                             <th>Book</th>
                             <th>Authors</th>
                             <th>Categories</th>
+                            <th>Thumbnail</th>
                             <th>Year Published</th>
                             <th>Average Rating</th>
                             <th>Actions</th>
@@ -176,10 +158,16 @@ class BookList extends Component {
                             <tr align="center"><td colSpan="5">No Record Found in Database</td></tr>:
                             books.map(
                                 (books,index) =>(
-                                    <tr key = {books.isbn}>
+                                    <tr key = {books.isbn13}>
+                                        <td>{books.isbn13}</td>
                                         <td>{books.title}</td>
-                                        <td>{books.author}</td>
-                                        <td>{books.catagories}</td>
+                                        <td>{books.authors}</td>
+                                        <td>{books.categories}</td>
+                                        <td><a
+                                            className="App-link"
+                                            href={books.thumbnail}
+                                            target="_blank"
+                                            rel="noopener noreferrer">{"See thumbnail"}</a></td>
                                         <td>{books.yearPublished}</td>
                                         <td>{books.averageRating}</td>
                                         {/* Edit buttons */}
@@ -194,19 +182,15 @@ class BookList extends Component {
                     {/* The pagination part contains a page number display and a button group to navigate to other pages */}
                     <table className="table">
                         <div className="page-number">
-                            Page {currentPage} of {totalPages}
+                            Page {currentPage}
                         </div>
                         <div className="pagination-buttons">
                             <nav>
                                 <ul className="pagination">
-                                    <li className="button"><Button type="button" className="page-link" variant="outline-info" disabled={currentPage === 1} onClick={this.showFirstPage}
-                                                                 ><FontAwesomeIcon icon={faFastBackward} /> First</Button></li>
                                     <li className="button"><Button type="button" className="page-link" variant="outline-info" disabled={currentPage === 1 } onClick={this.showPrevPage}
                                                                  ><FontAwesomeIcon icon={faStepBackward} /> Previous</Button></li>
                                     <li className="button"><Button type="button" className="page-link" variant="outline-info" disabled={currentPage === totalPages } onClick={this.showNextPage}
                                                                  ><FontAwesomeIcon icon={faStepForward} /> Next</Button></li>
-                                    <li className="button"><Button type="button" className="page-link" variant="outline-info" disabled={currentPage === totalPages} onClick={this.showLastPage}
-                                                                 ><FontAwesomeIcon icon={faFastForward} /> Last</Button></li>
                                 </ul>
                             </nav>
                         </div>
