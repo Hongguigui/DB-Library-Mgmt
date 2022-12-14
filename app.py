@@ -92,13 +92,13 @@ def serve(path):
     return send_from_directory(app.static_folder,'index.html')
 
 
-@app.route("/books")
-def books():
-    books = Book.query.all()
-    return books_schema.dump(books)
+# @app.route("/books")
+# def books():
+#     books = Book.query.all()
+#     return books_schema.dump(books)
 
 
-@app.route("/books/page", methods=['Get'])
+@app.route("/books/", methods=['Get'])
 def paginateBooks():
     page = request.args.get('page', 1, type=int)
     bookQuery = Book.query.paginate(page=page,per_page=5,error_out=False)
@@ -117,6 +117,7 @@ def searchByName(keyword):
     return books_schema.dump(bookSearchQuery)
     # return result
 
+
 @app.route("/ratingHigh/books/<minRating>", methods=['Get'])
 def sortHighRating(minRating):
     page = request.args.get('page', 1, type=int)
@@ -133,9 +134,17 @@ def sortLowRating(minRating):
     return books_schema.dump(bookSearchQuery)
 
 
-
 # api.add_resource(HelloApiHandler, '/flask/hello')
 # api.add_resource(BookListResource, '/books')
+
+
+@app.route("/search/books/isbn/<ISBN13>", methods=['Get'])
+def searchByISBN(ISBN13):
+    page = request.args.get('page', 1, type=int)
+    bookSearchQuery = Book.query.filter(Book.isbn13 == ISBN13).paginate(page=page,per_page=5,error_out=False)
+    # bookQuery = Book.query.paginate(page=currentPage, error_out=False, max_per_page=pgSize)
+    # print(page)
+    return books_schema.dump(bookSearchQuery)
 
 
 if __name__ == "__main__":
