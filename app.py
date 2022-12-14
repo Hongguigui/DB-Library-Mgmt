@@ -169,6 +169,7 @@ def paginateBooks():
     return books_schema.dump(bookQuery)
 
 
+
 # @app.route("/search/books/<keyword>", methods=['Get'])
 # def searchByName(keyword):
 #     page = request.args.get('page', 1, type=int)
@@ -184,6 +185,22 @@ def sortHighRating(minRating):
     page = request.args.get('page', 1, type=int)
     bookSearchQuery = Book.query.filter(
         Book.averageRating > minRating).order_by(Book.averageRating.desc()).paginate(page=page, per_page=5, error_out=False)
+    return books_schema.dump(bookSearchQuery)
+    
+
+@app.route("/ratingHigh/books/<minRating>", methods=['Get'])
+def sortHighRating(minRating):
+    page = request.args.get('page', 1, type=int)
+    bookSearchQuery = Book.query.filter(
+        Book.averageRating > minRating).order_by(Book.averageRating.desc()).paginate(page=page, per_page=10, error_out=False)
+    return books_schema.dump(bookSearchQuery)
+
+
+@app.route("/ratingLow/books/<minRating>", methods=['Get'])
+def sortLowRating(minRating):
+    page = request.args.get('page', 1, type=int)
+    bookSearchQuery = Book.query.filter(
+        Book.averageRating > minRating).order_by(Book.averageRating.asc()).paginate(page=page, per_page=10, error_out=False)
     return books_schema.dump(bookSearchQuery)
 
 
