@@ -15,6 +15,7 @@ import pymysql
 app = Flask(__name__)
 CORS(app) #comment this on deployment
 api = Api(app)
+# app.config['SQLALCHEMY_ECHO'] = True
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost:3306/library'
 db = SQLAlchemy(app)
@@ -57,48 +58,59 @@ class Book(db.Model):
 class Branch(db.Model):
     __tablename__ = "branch"
     Location = db.Column(db.String(100), primary_key=True)
-    EID = db.Column(db.Integer, foreign_key=True)
+    EID = db.Column(db.Integer, db.ForeignKey('employee.EID'))
     Name = db.Column(db.String(50))
+
     def create(self):
         db.session.add(self)
         db.session.commit()
         return self
+
     def __repr__(self):
         return '' % self.EID
+
 
 class Employee(db.Model):
     __tablename__ = "employee"
     EID = db.Column(db.Integer, primary_key=True)
-    UID = db.Column(db.Integer, foreign_key=True)
+    UID = db.Column(db.Integer, db.ForeignKey('user.UID'))
     Name = db.Column(db.String(50))
+
     def create(self):
         db.session.add(self)
         db.session.commit()
         return self
+
     def __repr__(self):
         return '' % self.EID
+
 
 class Salary(db.Model):
     __tablename__ = "salary"
     EID = db.Column(db.Integer, primary_key=True)
     Salary = db.Column(db.Integer)
+
     def create(self):
         db.session.add(self)
         db.session.commit()
         return self
+
     def __repr__(self):
         return '' % self.EID
 
-class Users(db.Model):
-    __tablename__ = "users"
+
+class User(db.Model):
+    __tablename__ = "user"
     UID = db.Column(db.Integer, primary_key=True)
-    Username = db.Column(db.String(50))
     Email = db.Column(db.String(50))
+    Password = db.Column(db.String(50))
     Fine = db.Column(db.Float)
+
     def create(self):
         db.session.add(self)
         db.session.commit()
         return self
+
     def __repr__(self):
         return '' % self.UID
 
@@ -147,10 +159,10 @@ def serve(path):
 #     return books_schema.dump(books)
 
 
-@app.route("/books/", methods=['Get'])
+@app.route("/books", methods=['Get'])
 def paginateBooks():
     page = request.args.get('page', 1, type=int)
-    bookQuery = Book.query.paginate(page=page,per_page=10,error_out=False)
+    bookQuery = Book.query.paginate(page=page, per_page=10, error_out=False)
     # # bookQuery = Book.query.paginate(page=currentPage, error_out=False, max_per_page=pgSize)
     # result = dict(datas=bookQuery.items, total=bookQuery.total, current_page=bookQuery.page, per_page=bookQuery.per_page)
     # print(page)
@@ -183,7 +195,17 @@ def sortLowRating(minRating):
     return books_schema.dump(bookSearchQuery)
 
 
-
+# some weird bugs maybe investigate later
+# @app.route("/search/books", methods=['Get'])
+# def searchByName():
+#     keyword = request.args.get('keyword', None)
+#     rating = request.args.get('rating', 0)
+#     print(keyword)
+#     print(rating)
+#     page = request.args.get('page', 1, type=int)
+#
+#     bookSearchQuery = Book.query.filter((Book.title.contains(keyword) | Book.authors.contains(keyword) | Book.categories.contains(keyword)) & Book.averageRating > rating).paginate(page=page,per_page=5,error_out=False)
+#     return books_schema.dump(bookSearchQuery)
 
 
 # api.add_resource(HelloApiHandler, '/flask/hello')
