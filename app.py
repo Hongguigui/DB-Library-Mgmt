@@ -15,7 +15,7 @@ import pymysql
 app = Flask(__name__)
 CORS(app) #comment this on deployment
 api = Api(app)
-# app.config['SQLALCHEMY_ECHO'] = True
+app.config['SQLALCHEMY_ECHO'] = True
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost:3306/library'
 db = SQLAlchemy(app)
@@ -169,14 +169,14 @@ def paginateBooks():
     return books_schema.dump(bookQuery)
 
 
-@app.route("/search/books/<keyword>", methods=['Get'])
-def searchByName(keyword):
-    page = request.args.get('page', 1, type=int)
-    bookSearchQuery = Book.query.filter(Book.title.contains(keyword) | Book.authors.contains(keyword) | Book.categories.contains(keyword)).paginate(page=page,per_page=5,error_out=False)
-    # bookQuery = Book.query.paginate(page=currentPage, error_out=False, max_per_page=pgSize)
-    # print(page)
-    return books_schema.dump(bookSearchQuery)
-    # return result
+# @app.route("/search/books/<keyword>", methods=['Get'])
+# def searchByName(keyword):
+#     page = request.args.get('page', 1, type=int)
+#     bookSearchQuery = Book.query.filter(Book.title.contains(keyword) | Book.authors.contains(keyword) | Book.categories.contains(keyword)).paginate(page=page,per_page=5,error_out=False)
+#     # bookQuery = Book.query.paginate(page=currentPage, error_out=False, max_per_page=pgSize)
+#     # print(page)
+#     return books_schema.dump(bookSearchQuery)
+#     # return result
 
 
 @app.route("/ratingHigh/books/<minRating>", methods=['Get'])
@@ -195,17 +195,17 @@ def sortLowRating(minRating):
     return books_schema.dump(bookSearchQuery)
 
 
-# some weird bugs maybe investigate later
-# @app.route("/search/books", methods=['Get'])
-# def searchByName():
-#     keyword = request.args.get('keyword', None)
-#     rating = request.args.get('rating', 0)
-#     print(keyword)
-#     print(rating)
-#     page = request.args.get('page', 1, type=int)
-#
-#     bookSearchQuery = Book.query.filter((Book.title.contains(keyword) | Book.authors.contains(keyword) | Book.categories.contains(keyword)) & Book.averageRating > rating).paginate(page=page,per_page=5,error_out=False)
-#     return books_schema.dump(bookSearchQuery)
+
+@app.route("/search/books", methods=['Get'])
+def searchByName():
+    keyword = request.args.get('keyword', None)
+    rating = request.args.get('rating', 0)
+    print(keyword)
+    print(rating)
+    page = request.args.get('page', 1, type=int)
+
+    bookSearchQuery = Book.query.filter((Book.averageRating > rating) & (Book.title.contains(keyword) | Book.authors.contains(keyword) | Book.categories.contains(keyword))).order_by(Book.averageRating.desc()).paginate(page=page,per_page=5,error_out=False)
+    return books_schema.dump(bookSearchQuery)
 
 
 # api.add_resource(HelloApiHandler, '/flask/hello')
