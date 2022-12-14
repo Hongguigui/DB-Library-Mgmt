@@ -15,6 +15,7 @@ import pymysql
 app = Flask(__name__)
 CORS(app) #comment this on deployment
 api = Api(app)
+app.config['SQLALCHEMY_ECHO'] = True
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost:3306/library'
 db = SQLAlchemy(app)
@@ -52,6 +53,66 @@ class Book(db.Model):
 
     def __repr__(self):
         return '' % self.isbn13
+
+
+class Branch(db.Model):
+    __tablename__ = "branch"
+    Location = db.Column(db.String(100), primary_key=True)
+    EID = db.Column(db.Integer, db.ForeignKey('employee.EID'))
+    Name = db.Column(db.String(50))
+
+    def create(self):
+        db.session.add(self)
+        db.session.commit()
+        return self
+
+    def __repr__(self):
+        return '' % self.EID
+
+
+class Employee(db.Model):
+    __tablename__ = "employee"
+    EID = db.Column(db.Integer, primary_key=True)
+    UID = db.Column(db.Integer, db.ForeignKey('user.UID'))
+    Name = db.Column(db.String(50))
+
+    def create(self):
+        db.session.add(self)
+        db.session.commit()
+        return self
+
+    def __repr__(self):
+        return '' % self.EID
+
+
+class Salary(db.Model):
+    __tablename__ = "salary"
+    EID = db.Column(db.Integer, primary_key=True)
+    Salary = db.Column(db.Integer)
+
+    def create(self):
+        db.session.add(self)
+        db.session.commit()
+        return self
+
+    def __repr__(self):
+        return '' % self.EID
+
+
+class User(db.Model):
+    __tablename__ = "user"
+    UID = db.Column(db.Integer, primary_key=True)
+    Email = db.Column(db.String(50))
+    Password = db.Column(db.String(50))
+    Fine = db.Column(db.Float)
+
+    def create(self):
+        db.session.add(self)
+        db.session.commit()
+        return self
+
+    def __repr__(self):
+        return '' % self.UID
 
 
 class BookSchema(ma.Schema):
@@ -92,30 +153,40 @@ def serve(path):
     return send_from_directory(app.static_folder,'index.html')
 
 
-@app.route("/books")
-def books():
-    books = Book.query.all()
-    return books_schema.dump(books)
+# @app.route("/books")
+# def books():
+#     books = Book.query.all()
+#     return books_schema.dump(books)
 
 
-@app.route("/books/page", methods=['Get'])
+@app.route("/books", methods=['Get'])
 def paginateBooks():
     page = request.args.get('page', 1, type=int)
-    bookQuery = Book.query.paginate(page=page,per_page=10,error_out=False)
+    bookQuery = Book.query.paginate(page=page, per_page=10, error_out=False)
     # # bookQuery = Book.query.paginate(page=currentPage, error_out=False, max_per_page=pgSize)
     # result = dict(datas=bookQuery.items, total=bookQuery.total, current_page=bookQuery.page, per_page=bookQuery.per_page)
     # print(page)
     return books_schema.dump(bookQuery)
 
 
-@app.route("/search/books/<keyword>", methods=['Get'])
-def searchByName(keyword):
+
+# @app.route("/search/books/<keyword>", methods=['Get'])
+# def searchByName(keyword):
+#     page = request.args.get('page', 1, type=int)
+#     bookSearchQuery = Book.query.filter(Book.title.contains(keyword) | Book.authors.contains(keyword) | Book.categories.contains(keyword)).paginate(page=page,per_page=5,error_out=False)
+#     # bookQuery = Book.query.paginate(page=currentPage, error_out=False, max_per_page=pgSize)
+#     # print(page)
+#     return books_schema.dump(bookSearchQuery)
+#     # return result
+
+
+@app.route("/ratingHigh/books/<minRating>", methods=['Get'])
+def sortHighRating(minRating):
     page = request.args.get('page', 1, type=int)
-    bookSearchQuery = Book.query.filter(Book.title.contains(keyword) | Book.authors.contains(keyword) | Book.categories.contains(keyword)).paginate(page=page,per_page=10,error_out=False)
-    # bookQuery = Book.query.paginate(page=currentPage, error_out=False, max_per_page=pgSize)
-    # print(page)
+    bookSearchQuery = Book.query.filter(
+        Book.averageRating > minRating).order_by(Book.averageRating.desc()).paginate(page=page, per_page=5, error_out=False)
     return books_schema.dump(bookSearchQuery)
-    # return result
+    
 
 @app.route("/ratingHigh/books/<minRating>", methods=['Get'])
 def sortHighRating(minRating):
@@ -133,9 +204,38 @@ def sortLowRating(minRating):
     return books_schema.dump(bookSearchQuery)
 
 
+@app.route("/ratingLow/books/<minRating>", methods=['Get'])
+def sortLowRating(minRating):
+    page = request.args.get('page', 1, type=int)
+    bookSearchQuery = Book.query.filter(
+        Book.averageRating > minRating).order_by(Book.averageRating.asc()).paginate(page=page, per_page=5, error_out=False)
+    return books_schema.dump(bookSearchQuery)
+
+
+
+@app.route("/search/books", methods=['Get'])
+def searchByName():
+    keyword = request.args.get('keyword', None)
+    rating = request.args.get('rating', 0)
+    print(keyword)
+    print(rating)
+    page = request.args.get('page', 1, type=int)
+
+    bookSearchQuery = Book.query.filter((Book.averageRating > rating) & (Book.title.contains(keyword) | Book.authors.contains(keyword) | Book.categories.contains(keyword))).order_by(Book.averageRating.desc()).paginate(page=page,per_page=5,error_out=False)
+    return books_schema.dump(bookSearchQuery)
+
 
 # api.add_resource(HelloApiHandler, '/flask/hello')
 # api.add_resource(BookListResource, '/books')
+
+
+@app.route("/search/books/isbn/<ISBN13>", methods=['Get'])
+def searchByISBN(ISBN13):
+    page = request.args.get('page', 1, type=int)
+    bookSearchQuery = Book.query.filter(Book.isbn13 == ISBN13).paginate(page=page,per_page=5,error_out=False)
+    # bookQuery = Book.query.paginate(page=currentPage, error_out=False, max_per_page=pgSize)
+    # print(page)
+    return books_schema.dump(bookSearchQuery)
 
 
 if __name__ == "__main__":
