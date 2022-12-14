@@ -54,6 +54,55 @@ class Book(db.Model):
         return '' % self.isbn13
 
 
+class Branch(db.Model):
+    __tablename__ = "branch"
+    Location = db.Column(db.String(100), primary_key=True)
+    EID = db.Column(db.Integer, foreign_key=True)
+    Name = db.Column(db.String(50))
+    def create(self):
+        db.session.add(self)
+        db.session.commit()
+        return self
+    def __repr__(self):
+        return '' % self.EID
+
+class Employee(db.Model):
+    __tablename__ = "employee"
+    EID = db.Column(db.Integer, primary_key=True)
+    UID = db.Column(db.Integer, foreign_key=True)
+    Name = db.Column(db.String(50))
+    def create(self):
+        db.session.add(self)
+        db.session.commit()
+        return self
+    def __repr__(self):
+        return '' % self.EID
+
+class Salary(db.Model):
+    __tablename__ = "salary"
+    EID = db.Column(db.Integer, primary_key=True)
+    Salary = db.Column(db.Integer)
+    def create(self):
+        db.session.add(self)
+        db.session.commit()
+        return self
+    def __repr__(self):
+        return '' % self.EID
+
+class Users(db.Model):
+    __tablename__ = "users"
+    UID = db.Column(db.Integer, primary_key=True)
+    Username = db.Column(db.String(50))
+    Email = db.Column(db.String(50))
+    Fine = db.Column(db.Float)
+    def create(self):
+        db.session.add(self)
+        db.session.commit()
+        return self
+    def __repr__(self):
+        return '' % self.UID
+
+
 class BookSchema(ma.Schema):
     class Meta(ModelSchema.Meta):
         fields = ("isbn13", "title", "authors", "categories", "categories", "thumbnail", "averageRating", "yearPublished")
