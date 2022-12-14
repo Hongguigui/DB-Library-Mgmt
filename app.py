@@ -111,7 +111,7 @@ def paginateBooks():
 @app.route("/search/books/<keyword>", methods=['Get'])
 def searchByName(keyword):
     page = request.args.get('page', 1, type=int)
-    bookSearchQuery = Book.query.filter(Book.title.contains(keyword) | Book.authors.contains(keyword) | Book.categories.contains(keyword)).paginate(page=page,per_page=5,error_out=False)
+    bookSearchQuery = Book.query.filter(Book.title.contains(keyword) | Book.authors.contains(keyword) | Book.categories.contains(keyword)).paginate(page=page,per_page=10,error_out=False)
     # bookQuery = Book.query.paginate(page=currentPage, error_out=False, max_per_page=pgSize)
     # print(page)
     return books_schema.dump(bookSearchQuery)
@@ -121,7 +121,7 @@ def searchByName(keyword):
 def sortHighRating(minRating):
     page = request.args.get('page', 1, type=int)
     bookSearchQuery = Book.query.filter(
-        Book.averageRating > minRating).order_by(Book.averageRating.desc()).paginate(page=page, per_page=5, error_out=False)
+        Book.averageRating > minRating).order_by(Book.averageRating.desc()).paginate(page=page, per_page=10, error_out=False)
     return books_schema.dump(bookSearchQuery)
 
 
@@ -129,7 +129,7 @@ def sortHighRating(minRating):
 def sortLowRating(minRating):
     page = request.args.get('page', 1, type=int)
     bookSearchQuery = Book.query.filter(
-        Book.averageRating > minRating).order_by(Book.averageRating.asc()).paginate(page=page, per_page=5, error_out=False)
+        Book.averageRating > minRating).order_by(Book.averageRating.asc()).paginate(page=page, per_page=10, error_out=False)
     return books_schema.dump(bookSearchQuery)
 
 
