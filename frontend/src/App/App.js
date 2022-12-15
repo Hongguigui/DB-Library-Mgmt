@@ -10,6 +10,7 @@ import {Route, Switch, BrowserRouter} from "react-router-dom";
 import BookList from "../User/book/BookList";
 import useToken from "../User/login/useToken";
 import Login from "../User/login/Login";
+import BorrowBook from "../User/book/BorrowBook";
 
 // Edited by Xiao Lin
 // Render the app, which has a header and a body
@@ -29,6 +30,7 @@ function App() {
                             <Switch>
                                 <Route exact path="/" component={Home}/>
                                 <Route exact path="/book" component={BookList}/>
+                                <Route exact path="/borrow/:id" component={BorrowBook}/>
                                 <Route component={NotFound}/>
                             </Switch>
                         )}

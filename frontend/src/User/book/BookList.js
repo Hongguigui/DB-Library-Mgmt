@@ -205,7 +205,7 @@ class BookList extends Component {
                                         <td>{books.yearPublished}</td>
                                         <td>{books.averageRating}</td>
                                         {/* Edit buttons */}
-                                        <td><Link to={`/update-books/${books.isbn13}`} className="btn btn-outline-primary"><FontAwesomeIcon icon={faEdit} /> Borrow</Link>
+                                        <td><Link to={`/borrow/${books.isbn13}`} className="btn btn-outline-primary"><FontAwesomeIcon icon={faEdit} /> Borrow</Link>
                                         </td>
                                     </tr>
                                 )
