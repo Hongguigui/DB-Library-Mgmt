@@ -129,8 +129,8 @@ class User(db.Model):
 class Borrows(db.Model):
     __tablename__ = "borrows"
     borrowsID = db.Column(db.Integer, primary_key=True)
-    ISBN = db.Column(db.Integer, db.ForeignKey('borrows.ISBN'))
-    UID = db.Column(db.Integer, db.ForeignKey('borrows.UID'))
+    isbn13 = db.Column(db.Integer, db.ForeignKey('books.isbn13'))
+    UID = db.Column(db.Integer, db.ForeignKey('user.UID'))
     timeLeft = db.Column(db.Integer)
     late = db.Column(db.Integer)
 
@@ -145,7 +145,7 @@ class Borrows(db.Model):
 
 class BookSchema(ma.Schema):
     class Meta(ModelSchema.Meta):
-        fields = ("isbn13", "title", "authors", "categories", "categories", "thumbnail", "averageRating", "yearPublished")
+        fields = ("isbn13", "title", "authors", "categories", "thumbnail", "averageRating", "yearPublished")
     #     model = Book
     #     sqla_session = db.session
     # ISBN = fields.Number(dump_only=True)
@@ -157,9 +157,16 @@ class BookSchema(ma.Schema):
     # yearPublished = fields.Number(required=False)
 
 
+class BorrowSchema(ma.Schema):
+    class Meta(ModelSchema.Meta):
+        fields = ("borrowsID", "isbn13", "UID", "timeLeft", "late", "title", "authors")
+
+
 book_schema = BookSchema()
 books_schema = BookSchema(many=True)
 
+borrow_schema = BorrowSchema()
+borrows_schema = BorrowSchema(many=True)
 
 # class BookListResource(Resource):
 #     def get(self):
@@ -302,9 +309,23 @@ def logout():
 
 
 @app.route("/borrowed")
-@jwt_required()
+# @jwt_required()
 def checkBorrows():
-    return "Non borrowed"
+    page = request.args.get('page', 1, type=int)
+    # currentUserUID = User.query.with_entities(User.UID).filter(User.Email == get_jwt_identity())
+    # list1 = []
+    # for row in currentUserUID:
+    #     list1.append([x for x in row])
+    # UID = list1[0][0]
+    # print(UID)
+
+    UID = 10004
+    # borrowedList = Borrows.query.join(Book).add_columns(Borrows.ISBN,Borrows.timeLeft,Book.title,Book.authors).filter(Borrows.UID = UID).paginate(page=page,per_page=5,error_out=False)
+    borrowedList = Borrows.query.join(Book).add_columns(Borrows.isbn13, Borrows.timeLeft, Book.title, Book.authors).filter(Borrows.UID == UID).paginate(page=page, per_page=10, error_out=False)
+    # borrowedList = Borrows.query.paginate(page=page, per_page=10, error_out=False)
+    return borrows_schema.dump(borrowedList)
+
+
 
 @app.route('/profile')
 @jwt_required()
