@@ -128,7 +128,7 @@ class User(db.Model):
 
 class Borrows(db.Model):
     __tablename__ = "borrows"
-    borrowsID = db.Column(db.Integer, primary_key=True)
+    borrowsID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     isbn13 = db.Column(db.Integer, db.ForeignKey('books.isbn13'))
     UID = db.Column(db.Integer, db.ForeignKey('user.UID'))
     timeLeft = db.Column(db.Integer)
@@ -309,33 +309,62 @@ def logout():
 
 
 @app.route("/borrowed")
-# @jwt_required()
+@jwt_required()
 def checkBorrows():
     page = request.args.get('page', 1, type=int)
-    # currentUserUID = User.query.with_entities(User.UID).filter(User.Email == get_jwt_identity())
-    # list1 = []
-    # for row in currentUserUID:
-    #     list1.append([x for x in row])
-    # UID = list1[0][0]
-    # print(UID)
+    currentUserUID = User.query.with_entities(User.UID).filter(User.Email == get_jwt_identity())
+    list1 = []
+    for row in currentUserUID:
+        list1.append([x for x in row])
+    UID = list1[0][0]
+    print(UID)
 
-    UID = 10004
+    # UID = 10004
     # borrowedList = Borrows.query.join(Book).add_columns(Borrows.ISBN,Borrows.timeLeft,Book.title,Book.authors).filter(Borrows.UID = UID).paginate(page=page,per_page=5,error_out=False)
     borrowedList = Borrows.query.join(Book).add_columns(Borrows.isbn13, Borrows.timeLeft, Book.title, Book.authors).filter(Borrows.UID == UID).paginate(page=page, per_page=10, error_out=False)
     # borrowedList = Borrows.query.paginate(page=page, per_page=10, error_out=False)
     return borrows_schema.dump(borrowedList)
 
 
-
-@app.route('/profile')
+@app.route("/checkout",methods=['POST'])
 @jwt_required()
-def my_profile():
-    response_body = {
-        "name": "Nagato",
-        "about": "Hello! I'm a full stack developer that loves python and javascript"
-    }
+def borrowBook():
+    isbn = request.json.get("isbn", None)
+    currentUserUID = User.query.with_entities(User.UID).filter(User.Email == get_jwt_identity())
+    list1 = []
+    for row in currentUserUID:
+        list1.append([x for x in row])
+    UID = list1[0][0]
+    newBorrow = Borrows(0, isbn, UID, 21, 0)
+    db.session.add(newBorrow)
+    db.commit()
+    app.logger.info(newBorrow.borrowsID)
+    return 1
 
-    return response_body
+
+@app.route("/return",methods=['POST'])
+@jwt_required()
+def returnBook():
+    isbn = request.json.get("isbn", None)
+    currentUserUID = User.query.with_entities(User.UID).filter(User.Email == get_jwt_identity())
+    list1 = []
+    for row in currentUserUID:
+        list1.append([x for x in row])
+    UID = list1[0][0]
+    Borrows.query.filter((Borrows.UID == UID) & (Borrows.isbn13 == isbn)).delete()
+    db.session.commit()
+    return 1
+
+
+# @app.route('/profile')
+# @jwt_required()
+# def my_profile():
+#     response_body = {
+#         "name": "Nagato",
+#         "about": "Hello! I'm a full stack developer that loves python and javascript"
+#     }
+#
+#     return response_body
 
 if __name__ == "__main__":
     # load_data()
