@@ -101,7 +101,7 @@ class BookList extends Component {
     // Make the request to the endpoint to retrieve the updated book list using the search input
     // And set the state with the response data
     searchBook = (currentPage) => {
-        bookService.bookSearch(currentPage, this.state.search)
+        bookService.bookSearch(currentPage, this.state.minRating, this.state.search)
         //axios.get("http://localhost:8080/book/"+this.state.search+"?page="+currentPage+"&size="+this.state.recordPerPage)
             .then(response => response.data).then((data) =>{
             this.setState({
@@ -170,12 +170,6 @@ class BookList extends Component {
                         markers={1}
                         onChange={(value) => {this.setMinRating(value); console.log(value)}}
                     />
-                        <button type="button" name="search" className="btn btn-info my-2 text-center mr-2"
-                                onClick={this.searchBook}><FontAwesomeIcon icon={faArrowUp} /> Sort by Rating (Asc)
-                        </button>
-                        <button type="button" name="search" className="btn btn-info my-2 text-center mr-2"
-                                onClick={this.searchBook}><FontAwesomeIcon icon={faArrowDown} /> Sort by Rating (Desc)
-                        </button>
                     </div>
                 </div>
                 {/* The book list part shows the attributes of the books and has the edit buttons */}
