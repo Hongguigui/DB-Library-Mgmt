@@ -32,7 +32,7 @@ def load_data():
 	book_df['title'] = book_df['title'].astype(str)
 	book_df['categories'] = book_df['categories'].astype(str)
 
-	book_df.to_sql('books', engine, index=False)
+	# book_df.to_sql('books', engine, index=False)
 
 	branch_df = pd.read_csv('data csv/Branch.csv')
 	branch_df['Location'] = branch_df['Location'].astype(str)
@@ -56,17 +56,17 @@ def load_data():
 
 	borrows_df = pd.read_csv('data csv/borrows.csv')
 	borrows_df['borrowsID'] = borrows_df['borrowsID'].astype(int)
-	borrows_df['ISBN'] = borrows_df['ISBN'].astype(int)
+	borrows_df['isbn13'] = borrows_df['isbn13']
 	borrows_df['UID'] = borrows_df['UID'].astype(int)
 	borrows_df['timeLeft'] = borrows_df['timeLeft'].astype(int)
 	borrows_df['late'] = borrows_df['late'].astype(int)
 
 
 	# Convert dataframe to sql table
-	branch_df.to_sql('branch', engine, index=False)
-	employee_df.to_sql('employee', engine, index=False)
-	salary_df.to_sql('salary', engine, index=False)
-	users_df.to_sql('user', engine, index=False)
+	# branch_df.to_sql('branch', engine, index=False)
+	# employee_df.to_sql('employee', engine, index=False)
+	# salary_df.to_sql('salary', engine, index=False)
+	# users_df.to_sql('user', engine, index=False)
 	borrows_df.to_sql('borrows', engine, index=False)
 
 
