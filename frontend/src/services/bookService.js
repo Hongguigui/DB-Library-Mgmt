@@ -14,6 +14,13 @@ class bookService{
     bookSearch =(currentPage, minRating, search) =>{
         return axios.get(`${apiUrlPrefix}/search/books?keyword=${search}&rating=${minRating}&page=${currentPage}`)
     }
+    // CRUD endpoints
+    getById = isbn13 =>{
+        return axios.get(`${apiUrlPrefix}/search/books/isbn/${isbn13}`)
+    }
+    update = (isbn13,data) =>{
+        return axios.put(`${apiUrlPrefix}${isbn13}`, data)
+    }
 }
 
 export default new bookService();

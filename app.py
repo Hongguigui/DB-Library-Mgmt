@@ -17,7 +17,7 @@ import json
 
 app = Flask(__name__)
 CORS(app) #comment this on deployment
-api = Api(app)
+# api = Api(app)
 # app.config['SQLALCHEMY_ECHO'] = True
 
 app.config["JWT_SECRET_KEY"] = "key"
@@ -225,26 +225,20 @@ def paginateBooks():
 #     # return result
 
 
+@app.route("/ratingHigh/books/<minRating>", methods=['Get'])
+def sortHighRating(minRating):
+    page = request.args.get('page', 1, type=int)
+    bookSearchQuery = Book.query.filter(
+        Book.averageRating > minRating).order_by(Book.averageRating.desc()).paginate(page=page, per_page=10, error_out=False)
+    return books_schema.dump(bookSearchQuery)
 
 
-# @app.route("/ratingHigh/books/<minRating>", methods=['Get'])
-# def sortHighRating(minRating):
-#     page = request.args.get('page', 1, type=int)
-#     bookSearchQuery = Book.query.filter(
-#         Book.averageRating > minRating).order_by(Book.averageRating.desc()).paginate(page=page, per_page=5, error_out=False)
-#     return books_schema.dump(bookSearchQuery)
-    
-
-
-
-
-# @app.route("/ratingLow/books/<minRating>", methods=['Get'])
-# def sortLowRating(minRating):
-#     page = request.args.get('page', 1, type=int)
-#     bookSearchQuery = Book.query.filter(
-#         Book.averageRating > minRating).order_by(Book.averageRating.asc()).paginate(page=page, per_page=10, error_out=False)
-#     return books_schema.dump(bookSearchQuery)
-
+@app.route("/ratingLow/books/<minRating>", methods=['Get'])
+def sortLowRating(minRating):
+    page = request.args.get('page', 1, type=int)
+    bookSearchQuery = Book.query.filter(
+        Book.averageRating > minRating).order_by(Book.averageRating.asc()).paginate(page=page, per_page=10, error_out=False)
+    return books_schema.dump(bookSearchQuery)
 
 
 @app.route("/search/books", methods=['Get'])
@@ -255,7 +249,7 @@ def searchByName():
     print(rating)
     page = request.args.get('page', 1, type=int)
 
-    bookSearchQuery = Book.query.filter((Book.averageRating > rating) & (Book.title.contains(keyword) | Book.authors.contains(keyword) | Book.categories.contains(keyword))).order_by(Book.averageRating.desc()).paginate(page=page,per_page=5,error_out=False)
+    bookSearchQuery = Book.query.filter((Book.averageRating > rating) & (Book.title.contains(keyword) | Book.authors.contains(keyword) | Book.categories.contains(keyword))).order_by(Book.averageRating.desc()).paginate(page=page,per_page=10,error_out=False)
     return books_schema.dump(bookSearchQuery)
 
 
@@ -265,7 +259,7 @@ def searchByName():
 @app.route("/search/books/isbn/<ISBN13>", methods=['Get'])
 def searchByISBN(ISBN13):
     page = request.args.get('page', 1, type=int)
-    bookSearchQuery = Book.query.filter(Book.isbn13 == ISBN13).paginate(page=page,per_page=5,error_out=False)
+    bookSearchQuery = Book.query.filter(Book.isbn13 == ISBN13).paginate(page=page,per_page=10,error_out=False)
 
 
     # bookQuery = Book.query.paginate(page=currentPage, error_out=False, max_per_page=pgSize)
@@ -295,6 +289,7 @@ def create_token():
     response = {"access_token": access_token}
     return response
 
+
     # bookQuery = Book.query.paginate(page=currentPage, error_out=False, max_per_page=pgSize)
     # print(page)
 
@@ -311,6 +306,15 @@ def logout():
 def checkBorrows():
     return "Non borrowed"
 
+@app.route('/profile')
+@jwt_required()
+def my_profile():
+    response_body = {
+        "name": "Nagato",
+        "about": "Hello! I'm a full stack developer that loves python and javascript"
+    }
+
+    return response_body
 
 if __name__ == "__main__":
     # load_data()

@@ -148,7 +148,7 @@ class BookList extends Component {
                         <input type="text" className="form-control" name="search" size="50"
                                placeholder="Search books ..." autoComplete="off" value={search} onChange={this.searchInput}/>
                         <button type="button" name="search" className="btn btn-info my-2 text-center mr-2"
-                                onClick={this.searchBook}><FontAwesomeIcon icon={faSearch} /> Search
+                                onClick={this.searchBook} disabled={this.state.search === ''}><FontAwesomeIcon icon={faSearch} /> Search
                         </button>
                         <button type="reset" className="btn btn-secondary text-center ml-5"
                                 style={{marginLeft: '10px'}} onClick={this.resetSearch}> <FontAwesomeIcon icon={faTimes} /> Clear
@@ -205,7 +205,7 @@ class BookList extends Component {
                                         <td>{books.yearPublished}</td>
                                         <td>{books.averageRating}</td>
                                         {/* Edit buttons */}
-                                        <td><Link to={`/update-books/${books.isbn13}`} className="btn btn-outline-primary"><FontAwesomeIcon icon={faEdit} /> Borrow</Link>
+                                        <td><Link to={`/borrow/${books.isbn13}`} className="btn btn-outline-primary"><FontAwesomeIcon icon={faEdit} /> Borrow</Link>
                                         </td>
                                     </tr>
                                 )

@@ -13,6 +13,7 @@ def load_data():
 	# # Create SQLAlchemy engine to connect to MySQL Database
 	engine = create_engine('mysql+pymysql://{user}:{pw}@{host}/{db}'.format(host=hostname, db=dbname, user=uname, pw=pwd))
 
+
 	# # Create dataframe
 	book_df = pd.read_csv('data csv/dbbooks.csv')
 

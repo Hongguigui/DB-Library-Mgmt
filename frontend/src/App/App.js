@@ -6,38 +6,34 @@ import 'react-s-alert-v3/dist/s-alert-css-effects/slide.css';
 import AppHeader from "../common/header";
 import Home from '../home/Home';
 import NotFound from '../common/NotFound';
-import {Route, Switch} from "react-router-dom";
-import LoadingIndicator from "../common/LoadingIndicator";
+import {Route, Switch, BrowserRouter} from "react-router-dom";
 import BookList from "../User/book/BookList";
+import useToken from "../User/login/useToken";
+import Login from "../User/login/Login";
+import BorrowBook from "../User/book/BorrowBook";
 
 // Edited by Xiao Lin
 // Render the app, which has a header and a body
 // Render the loading indicator if the app is in the loading stage
-class App extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            loading: false
-        }
-    }
-
-    render() {
-        if (this.state.loading) {
-            return <LoadingIndicator/>
-        }
-
+function App() {
+  const { token, removeToken, setToken } = useToken();
 
         return (
             <div className="App">
                 <div className="app-top-box">
-                    <AppHeader/>
+                    <AppHeader token={removeToken}/>
                 </div>
                 <div className="app-body">
-                    <Switch>
-                        <Route exact path="/" component={Home}/>
-                        <Route exact path="/book" component={BookList}/>
-                        <Route component={NotFound}/>
-                    </Switch>
+                    {!token && token!=="" &&token!== undefined?
+                        <Login setToken={setToken} />
+                        :(
+                            <Switch>
+                                <Route exact path="/" component={Home}/>
+                                <Route exact path="/book" component={BookList}/>
+                                <Route exact path="/borrow/:id" component={BorrowBook}/>
+                                <Route component={NotFound}/>
+                            </Switch>
+                        )}
                 </div>
                 <Alert stack={{limit: 3}}
                        timeout={3000}
@@ -45,6 +41,5 @@ class App extends Component {
             </div>
         );
     }
-}
 
 export default App;
