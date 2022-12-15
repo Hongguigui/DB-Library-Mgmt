@@ -9,18 +9,29 @@ from marshmallow import fields
 from flask_marshmallow import Marshmallow
 from pprint import pprint
 import pymysql
+from flask_jwt_extended import create_access_token,get_jwt,get_jwt_identity,unset_jwt_cookies, jwt_required, JWTManager
+from datetime import datetime, timedelta, timezone
+import json
 
 # from load_data import load_data
 
 app = Flask(__name__)
 CORS(app) #comment this on deployment
 api = Api(app)
-app.config['SQLALCHEMY_ECHO'] = True
+# app.config['SQLALCHEMY_ECHO'] = True
+
+app.config["JWT_SECRET_KEY"] = "key"
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
+jwt = JWTManager(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost:3306/library'
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
+# Session = sessionmaker(bind = engine)
+# session = Session()
+#
+# conn = engine.connect()
 
 # def Convert(lst):
 #     res_dct = {lst[i]: lst[i + 1] for i in range(0, len(lst), 2)}
@@ -170,6 +181,23 @@ def serve(path):
     return send_from_directory(app.static_folder,'index.html')
 
 
+@app.after_request
+def refresh_expiring_jwts(response):
+    try:
+        exp_timestamp = get_jwt()["exp"]
+        now = datetime.now(timezone.utc)
+        target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
+        if target_timestamp > exp_timestamp:
+            access_token = create_access_token(identity=get_jwt_identity())
+            data = response.get_json()
+            if type(data) is dict:
+                data["access_token"] = access_token
+                response.data = json.dumps(data)
+        return response
+    except (RuntimeError, KeyError):
+        # Case where there is not a valid JWT. Just return the original respone
+        return response
+
 # @app.route("/books")
 # def books():
 #     books = Book.query.all()
@@ -197,20 +225,26 @@ def paginateBooks():
 #     # return result
 
 
-@app.route("/ratingHigh/books/<minRating>", methods=['Get'])
-def sortHighRating(minRating):
-    page = request.args.get('page', 1, type=int)
-    bookSearchQuery = Book.query.filter(
-        Book.averageRating > minRating).order_by(Book.averageRating.desc()).paginate(page=page, per_page=5, error_out=False)
-    return books_schema.dump(bookSearchQuery)
 
 
-@app.route("/ratingLow/books/<minRating>", methods=['Get'])
-def sortLowRating(minRating):
-    page = request.args.get('page', 1, type=int)
-    bookSearchQuery = Book.query.filter(
-        Book.averageRating > minRating).order_by(Book.averageRating.asc()).paginate(page=page, per_page=10, error_out=False)
-    return books_schema.dump(bookSearchQuery)
+# @app.route("/ratingHigh/books/<minRating>", methods=['Get'])
+# def sortHighRating(minRating):
+#     page = request.args.get('page', 1, type=int)
+#     bookSearchQuery = Book.query.filter(
+#         Book.averageRating > minRating).order_by(Book.averageRating.desc()).paginate(page=page, per_page=5, error_out=False)
+#     return books_schema.dump(bookSearchQuery)
+    
+
+
+
+
+# @app.route("/ratingLow/books/<minRating>", methods=['Get'])
+# def sortLowRating(minRating):
+#     page = request.args.get('page', 1, type=int)
+#     bookSearchQuery = Book.query.filter(
+#         Book.averageRating > minRating).order_by(Book.averageRating.asc()).paginate(page=page, per_page=10, error_out=False)
+#     return books_schema.dump(bookSearchQuery)
+
 
 
 @app.route("/search/books", methods=['Get'])
@@ -232,9 +266,50 @@ def searchByName():
 def searchByISBN(ISBN13):
     page = request.args.get('page', 1, type=int)
     bookSearchQuery = Book.query.filter(Book.isbn13 == ISBN13).paginate(page=page,per_page=5,error_out=False)
+
+
     # bookQuery = Book.query.paginate(page=currentPage, error_out=False, max_per_page=pgSize)
     # print(page)
     return books_schema.dump(bookSearchQuery)
+
+
+@app.route("/token", methods=['Get','POST'])
+def create_token():
+
+    # providedEmail = request.json.get("email", None)
+    # providedPassword = request.json.get("password", None)
+
+    providedEmail = request.json.get("email", None)
+    providedPassword = request.json.get("password", None)
+
+    userSearchQuery = User.query.with_entities(User.Email, User.Password).filter(User.Email == providedEmail)
+
+    list1 = []
+    for row in userSearchQuery:
+        list1.append([x for x in row])
+
+    if providedEmail != list1[0][0] or providedPassword != list1[0][1]:
+        return {"msg": "Wrong email or password"}, 401
+
+    access_token = create_access_token(identity=providedEmail)
+    response = {"access_token": access_token}
+    return response
+
+    # bookQuery = Book.query.paginate(page=currentPage, error_out=False, max_per_page=pgSize)
+    # print(page)
+
+
+@app.route("/logout", methods=["POST"])
+def logout():
+    response = jsonify({"msg": "logout successful"})
+    unset_jwt_cookies(response)
+    return response
+
+
+@app.route("/borrowed")
+@jwt_required()
+def checkBorrows():
+    return "Non borrowed"
 
 
 if __name__ == "__main__":

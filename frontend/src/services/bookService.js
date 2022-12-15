@@ -9,10 +9,10 @@ class bookService{
 
     // Pageable endpoints
     getBooks =(currentPage) =>{
-        return axios.get(`${apiUrlPrefix}/books/page?page=${currentPage}`)
+        return axios.get(`${apiUrlPrefix}/books?page=${currentPage}`)
     }
-    bookSearch =(currentPage, search) =>{
-        return axios.get(`${apiUrlPrefix}/search/books/${search}?page=${currentPage}`)
+    bookSearch =(currentPage, minRating, search) =>{
+        return axios.get(`${apiUrlPrefix}/search/books?keyword=${search}&rating=${minRating}&page=${currentPage}`)
     }
 }
 
