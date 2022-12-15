@@ -212,7 +212,7 @@ def paginateBooks():
 def sortHighRating(minRating):
     page = request.args.get('page', 1, type=int)
     bookSearchQuery = Book.query.filter(
-        Book.averageRating > minRating).order_by(Book.averageRating.desc()).paginate(page=page, per_page=5, error_out=False)
+        Book.averageRating > minRating).order_by(Book.averageRating.desc()).paginate(page=page, per_page=10, error_out=False)
     return books_schema.dump(bookSearchQuery)
 
 
@@ -232,7 +232,7 @@ def searchByName():
     print(rating)
     page = request.args.get('page', 1, type=int)
 
-    bookSearchQuery = Book.query.filter((Book.averageRating > rating) & (Book.title.contains(keyword) | Book.authors.contains(keyword) | Book.categories.contains(keyword))).order_by(Book.averageRating.desc()).paginate(page=page,per_page=5,error_out=False)
+    bookSearchQuery = Book.query.filter((Book.averageRating > rating) & (Book.title.contains(keyword) | Book.authors.contains(keyword) | Book.categories.contains(keyword))).order_by(Book.averageRating.desc()).paginate(page=page,per_page=10,error_out=False)
     return books_schema.dump(bookSearchQuery)
 
 
@@ -243,7 +243,7 @@ def searchByName():
 @app.route("/search/books/isbn/<ISBN13>", methods=['Get'])
 def searchByISBN(ISBN13):
     page = request.args.get('page', 1, type=int)
-    bookSearchQuery = Book.query.filter(Book.isbn13 == ISBN13).paginate(page=page,per_page=5,error_out=False)
+    bookSearchQuery = Book.query.filter(Book.isbn13 == ISBN13).paginate(page=page,per_page=10,error_out=False)
 
 
     # bookQuery = Book.query.paginate(page=currentPage, error_out=False, max_per_page=pgSize)
@@ -290,6 +290,15 @@ def logout():
 def checkBorrows():
     return "Non borrowed"
 
+@app.route('/profile')
+@jwt_required()
+def my_profile():
+    response_body = {
+        "name": "Nagato",
+        "about": "Hello! I'm a full stack developer that loves python and javascript"
+    }
+
+    return response_body
 
 if __name__ == "__main__":
     # load_data()

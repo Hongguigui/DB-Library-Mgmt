@@ -6,11 +6,10 @@ import 'react-s-alert-v3/dist/s-alert-css-effects/slide.css';
 import AppHeader from "../common/header";
 import Home from '../home/Home';
 import NotFound from '../common/NotFound';
-import {Route, Switch} from "react-router-dom";
+import {Route, Switch, BrowserRouter} from "react-router-dom";
 import BookList from "../User/book/BookList";
 import useToken from "../User/login/useToken";
 import Login from "../User/login/Login";
-import Profile from "../User/login/Profile"
 
 // Edited by Xiao Lin
 // Render the app, which has a header and a body
@@ -30,7 +29,6 @@ function App() {
                             <Switch>
                                 <Route exact path="/" component={Home}/>
                                 <Route exact path="/book" component={BookList}/>
-                                <Route exact path="/profile" element={<Profile token={token} setToken={setToken}/>}></Route>
                                 <Route component={NotFound}/>
                             </Switch>
                         )}

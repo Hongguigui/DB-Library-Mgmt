@@ -4,6 +4,7 @@ import {THE_APP_NAME} from "../const";
 import './header.css';
 import book_logo from "../books-logo.png";
 import axios from "axios";
+import {Button} from "react-bootstrap";
 
 // Edited by Xiao Lin
 // The header will show our logo and branding on the left, and show the tabs on the right
@@ -27,7 +28,7 @@ function AppHeader(props) {
     return (
             <header className="App-header">
                 <div className="App-header-left">
-                    <img src={book_logo} className="Project-logo" alt="project_dove_logo" width={100} length={100}/>
+                    <img src={book_logo} className="Project-logo" alt="lib_logo" width={100} length={100}/>
                     <div className="app-branding">
                         <Link to="/" className="app-title">{THE_APP_NAME}</Link>
                     </div>
@@ -40,9 +41,6 @@ function AppHeader(props) {
                                     <NavLink to="/book">Book List</NavLink>
                                 </li>
                                 <li>
-                                    <button onClick={logMeOut}>Logout</button>
-                                </li>
-                                <li>
                                     <a
                                         className="App-link"
                                         href="https://github.com/Hongguigui/DB-Library-Mgmt"
@@ -51,6 +49,9 @@ function AppHeader(props) {
                                     >
                                         About
                                     </a>
+                                </li>
+                                <li>
+                                    <Button onClick={logMeOut}>Logout</Button>
                                 </li>
                             </ul>
                         </nav>

@@ -148,7 +148,7 @@ class BookList extends Component {
                         <input type="text" className="form-control" name="search" size="50"
                                placeholder="Search books ..." autoComplete="off" value={search} onChange={this.searchInput}/>
                         <button type="button" name="search" className="btn btn-info my-2 text-center mr-2"
-                                onClick={this.searchBook}><FontAwesomeIcon icon={faSearch} /> Search
+                                onClick={this.searchBook} disabled={this.state.search === ''}><FontAwesomeIcon icon={faSearch} /> Search
                         </button>
                         <button type="reset" className="btn btn-secondary text-center ml-5"
                                 style={{marginLeft: '10px'}} onClick={this.resetSearch}> <FontAwesomeIcon icon={faTimes} /> Clear
