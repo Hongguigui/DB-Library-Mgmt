@@ -9,18 +9,28 @@ from marshmallow import fields
 from flask_marshmallow import Marshmallow
 from pprint import pprint
 import pymysql
+from flask_jwt_extended import create_access_token,get_jwt,get_jwt_identity,unset_jwt_cookies, jwt_required, JWTManager
+from datetime import datetime, timedelta, timezone
 
 # from load_data import load_data
 
 app = Flask(__name__)
 CORS(app) #comment this on deployment
 api = Api(app)
-app.config['SQLALCHEMY_ECHO'] = True
+# app.config['SQLALCHEMY_ECHO'] = True
+
+app.config["JWT_SECRET_KEY"] = "key"
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
+jwt = JWTManager(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost:3306/library'
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
+# Session = sessionmaker(bind = engine)
+# session = Session()
+#
+# conn = engine.connect()
 
 # def Convert(lst):
 #     res_dct = {lst[i]: lst[i + 1] for i in range(0, len(lst), 2)}
@@ -212,7 +222,6 @@ def sortLowRating(minRating):
     return books_schema.dump(bookSearchQuery)
 
 
-
 @app.route("/search/books", methods=['Get'])
 def searchByName():
     keyword = request.args.get('keyword', None)
@@ -233,9 +242,43 @@ def searchByName():
 def searchByISBN(ISBN13):
     page = request.args.get('page', 1, type=int)
     bookSearchQuery = Book.query.filter(Book.isbn13 == ISBN13).paginate(page=page,per_page=5,error_out=False)
+
+
     # bookQuery = Book.query.paginate(page=currentPage, error_out=False, max_per_page=pgSize)
     # print(page)
     return books_schema.dump(bookSearchQuery)
+
+
+@app.route("/token", methods=['Get','POST'])
+def create_token():
+
+    # providedEmail = request.json.get("email", None)
+    # providedPassword = request.json.get("password", None)
+
+    providedEmail = request.json.get("email", None)
+    providedPassword = request.json.get("password", None)
+
+    userSearchQuery = User.query.with_entities(User.Email, User.Password).filter(User.Email == providedEmail)
+
+    list1 = []
+    for row in userSearchQuery:
+        list1.append([x for x in row])
+
+    if providedEmail != list1[0][0] or providedPassword != list1[0][1]:
+        return {"msg": "Wrong email or password"}, 401
+
+    access_token = create_access_token(identity=providedEmail)
+    response = {"access_token": access_token}
+    return response
+
+
+    # bookQuery = Book.query.paginate(page=currentPage, error_out=False, max_per_page=pgSize)
+    # print(page)
+
+
+
+
+
 
 
 if __name__ == "__main__":
