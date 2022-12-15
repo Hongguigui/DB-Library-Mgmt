@@ -11,6 +11,7 @@ from pprint import pprint
 import pymysql
 from flask_jwt_extended import create_access_token,get_jwt,get_jwt_identity,unset_jwt_cookies, jwt_required, JWTManager
 from datetime import datetime, timedelta, timezone
+import json
 
 # from load_data import load_data
 
@@ -163,6 +164,23 @@ def serve(path):
     return send_from_directory(app.static_folder,'index.html')
 
 
+@app.after_request
+def refresh_expiring_jwts(response):
+    try:
+        exp_timestamp = get_jwt()["exp"]
+        now = datetime.now(timezone.utc)
+        target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
+        if target_timestamp > exp_timestamp:
+            access_token = create_access_token(identity=get_jwt_identity())
+            data = response.get_json()
+            if type(data) is dict:
+                data["access_token"] = access_token
+                response.data = json.dumps(data)
+        return response
+    except (RuntimeError, KeyError):
+        # Case where there is not a valid JWT. Just return the original respone
+        return response
+
 # @app.route("/books")
 # def books():
 #     books = Book.query.all()
@@ -260,12 +278,20 @@ def create_token():
     # print(page)
 
 
+@app.route("/logout", methods=["POST"])
+def logout():
+    response = jsonify({"msg": "logout successful"})
+    unset_jwt_cookies(response)
+    return response
 
 
-
+@app.route("/borrowed")
+@jwt_required()
+def checkBorrows():
+    return "Non borrowed"
 
 
 if __name__ == "__main__":
-    #load_data()
+    # load_data()
     app.run()
 
