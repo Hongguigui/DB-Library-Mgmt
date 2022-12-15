@@ -126,6 +126,23 @@ class User(db.Model):
         return '' % self.UID
 
 
+class Borrows(db.Model):
+    __tablename__ = "borrows"
+    borrowsID = db.Column(db.Integer, primary_key=True)
+    ISBN = db.Column(db.Integer, db.ForeignKey('borrows.ISBN'))
+    UID = db.Column(db.Integer, db.ForeignKey('borrows.UID'))
+    timeLeft = db.Column(db.Integer)
+    late = db.Column(db.Integer)
+
+    def create(self):
+        db.session.add(self)
+        db.session.commit()
+        return self
+
+    def __repr__(self):
+        return '' % self.borrowsID
+
+
 class BookSchema(ma.Schema):
     class Meta(ModelSchema.Meta):
         fields = ("isbn13", "title", "authors", "categories", "categories", "thumbnail", "averageRating", "yearPublished")
@@ -208,6 +225,8 @@ def paginateBooks():
 #     # return result
 
 
+
+
 # @app.route("/ratingHigh/books/<minRating>", methods=['Get'])
 # def sortHighRating(minRating):
 #     page = request.args.get('page', 1, type=int)
@@ -216,12 +235,7 @@ def paginateBooks():
 #     return books_schema.dump(bookSearchQuery)
     
 
-@app.route("/ratingHigh/books/<minRating>", methods=['Get'])
-def sortHighRating(minRating):
-    page = request.args.get('page', 1, type=int)
-    bookSearchQuery = Book.query.filter(
-        Book.averageRating > minRating).order_by(Book.averageRating.desc()).paginate(page=page, per_page=10, error_out=False)
-    return books_schema.dump(bookSearchQuery)
+
 
 
 # @app.route("/ratingLow/books/<minRating>", methods=['Get'])
@@ -231,13 +245,6 @@ def sortHighRating(minRating):
 #         Book.averageRating > minRating).order_by(Book.averageRating.asc()).paginate(page=page, per_page=10, error_out=False)
 #     return books_schema.dump(bookSearchQuery)
 
-
-@app.route("/ratingLow/books/<minRating>", methods=['Get'])
-def sortLowRating(minRating):
-    page = request.args.get('page', 1, type=int)
-    bookSearchQuery = Book.query.filter(
-        Book.averageRating > minRating).order_by(Book.averageRating.asc()).paginate(page=page, per_page=5, error_out=False)
-    return books_schema.dump(bookSearchQuery)
 
 
 @app.route("/search/books", methods=['Get'])
@@ -254,7 +261,6 @@ def searchByName():
 
 # api.add_resource(HelloApiHandler, '/flask/hello')
 # api.add_resource(BookListResource, '/books')
-
 
 @app.route("/search/books/isbn/<ISBN13>", methods=['Get'])
 def searchByISBN(ISBN13):
