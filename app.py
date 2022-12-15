@@ -126,6 +126,23 @@ class User(db.Model):
         return '' % self.UID
 
 
+class Borrows(db.Model):
+    __tablename__ = "borrows"
+    borrowsID = db.Column(db.Integer, primary_key=True)
+    ISBN = db.Column(db.Integer, db.ForeignKey('borrows.ISBN'))
+    UID = db.Column(db.Integer, db.ForeignKey('borrows.UID'))
+    timeLeft = db.Column(db.Integer)
+    late = db.Column(db.Integer)
+
+    def create(self):
+        db.session.add(self)
+        db.session.commit()
+        return self
+
+    def __repr__(self):
+        return '' % self.borrowsID
+
+
 class BookSchema(ma.Schema):
     class Meta(ModelSchema.Meta):
         fields = ("isbn13", "title", "authors", "categories", "categories", "thumbnail", "averageRating", "yearPublished")
@@ -238,7 +255,6 @@ def searchByName():
 
 # api.add_resource(HelloApiHandler, '/flask/hello')
 # api.add_resource(BookListResource, '/books')
-
 
 @app.route("/search/books/isbn/<ISBN13>", methods=['Get'])
 def searchByISBN(ISBN13):

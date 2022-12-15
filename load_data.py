@@ -13,7 +13,8 @@ def load_data():
 	# # Create SQLAlchemy engine to connect to MySQL Database
 	engine = create_engine('mysql+pymysql://{user}:{pw}@{host}/{db}'.format(host=hostname, db=dbname, user=uname, pw=pwd))
 
-	# Create dataframe
+
+	# # Create dataframe
 	book_df = pd.read_csv('data csv/dbbooks.csv')
 
 	book_df["concat"] = book_df["isbn13"].astype(str)+book_df["title"]+book_df["authors"]
@@ -33,11 +34,6 @@ def load_data():
 	book_df['categories'] = book_df['categories'].astype(str)
 
 	book_df.to_sql('books', engine, index=False)
-	#
-	# branch_df = pd.read_csv('data csv/Branch.csv')
-	# emp_df = pd.read_csv('data csv/Employee.csv')
-	# salary_df = pd.read_csv('data csv/Salary.csv')
-	# user_df = pd.read_csv('data csv/Users.csv')
 
 	branch_df = pd.read_csv('data csv/Branch.csv')
 	branch_df['Location'] = branch_df['Location'].astype(str)
@@ -59,12 +55,20 @@ def load_data():
 	users_df['Password'] = users_df['Password'].astype(str)
 	users_df['Fine'] = users_df['Fine'].astype(int)
 
+	borrows_df = pd.read_csv('data csv/borrows.csv')
+	borrows_df['borrowsID'] = borrows_df['borrowsID'].astype(int)
+	borrows_df['ISBN'] = borrows_df['ISBN'].astype(int)
+	borrows_df['UID'] = borrows_df['UID'].astype(int)
+	borrows_df['timeLeft'] = borrows_df['timeLeft'].astype(int)
+	borrows_df['late'] = borrows_df['late'].astype(int)
+
 
 	# Convert dataframe to sql table
-	branch_df.to_sql('branch', engine, index= False)
-	employee_df.to_sql('employee', engine, index= False)
-	salary_df.to_sql('salary', engine, index= False)
+	branch_df.to_sql('branch', engine, index=False)
+	employee_df.to_sql('employee', engine, index=False)
+	salary_df.to_sql('salary', engine, index=False)
 	users_df.to_sql('user', engine, index=False)
+	borrows_df.to_sql('borrows', engine, index=False)
 
 
 load_data()
