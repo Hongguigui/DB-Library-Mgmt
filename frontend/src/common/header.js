@@ -3,12 +3,28 @@ import { BrowserRouter, Link, NavLink } from 'react-router-dom';
 import {THE_APP_NAME} from "../const";
 import './header.css';
 import book_logo from "../books-logo.png";
+import axios from "axios";
 
 // Edited by Xiao Lin
 // The header will show our logo and branding on the left, and show the tabs on the right
-class AppHeader extends Component {
-    render() {
-        return (
+function AppHeader(props) {
+
+  function logMeOut() {
+    axios({
+      method: "POST",
+      url:"http://localhost:5000/logout",
+    })
+    .then((response) => {
+       props.token()
+    }).catch((error) => {
+      if (error.response) {
+        console.log(error.response)
+        console.log(error.response.status)
+        console.log(error.response.headers)
+        }
+    })}
+
+    return (
             <header className="App-header">
                 <div className="App-header-left">
                     <img src={book_logo} className="Project-logo" alt="project_dove_logo" width={100} length={100}/>
@@ -22,6 +38,9 @@ class AppHeader extends Component {
                             <ul>
                                 <li>
                                     <NavLink to="/book">Book List</NavLink>
+                                </li>
+                                <li>
+                                    <button onClick={logMeOut}>Logout</button>
                                 </li>
                                 <li>
                                     <a
@@ -39,7 +58,6 @@ class AppHeader extends Component {
                 </div>
             </header>
         )
-    }
 }
 
 export default AppHeader;

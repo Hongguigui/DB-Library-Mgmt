@@ -16,7 +16,7 @@ from datetime import datetime, timedelta, timezone
 
 app = Flask(__name__)
 CORS(app) #comment this on deployment
-api = Api(app)
+# api = Api(app)
 # app.config['SQLALCHEMY_ECHO'] = True
 
 app.config["JWT_SECRET_KEY"] = "key"
@@ -196,14 +196,6 @@ def sortHighRating(minRating):
     bookSearchQuery = Book.query.filter(
         Book.averageRating > minRating).order_by(Book.averageRating.desc()).paginate(page=page, per_page=5, error_out=False)
     return books_schema.dump(bookSearchQuery)
-    
-
-@app.route("/ratingHigh/books/<minRating>", methods=['Get'])
-def sortHighRating(minRating):
-    page = request.args.get('page', 1, type=int)
-    bookSearchQuery = Book.query.filter(
-        Book.averageRating > minRating).order_by(Book.averageRating.desc()).paginate(page=page, per_page=10, error_out=False)
-    return books_schema.dump(bookSearchQuery)
 
 
 @app.route("/ratingLow/books/<minRating>", methods=['Get'])
@@ -211,14 +203,6 @@ def sortLowRating(minRating):
     page = request.args.get('page', 1, type=int)
     bookSearchQuery = Book.query.filter(
         Book.averageRating > minRating).order_by(Book.averageRating.asc()).paginate(page=page, per_page=10, error_out=False)
-    return books_schema.dump(bookSearchQuery)
-
-
-@app.route("/ratingLow/books/<minRating>", methods=['Get'])
-def sortLowRating(minRating):
-    page = request.args.get('page', 1, type=int)
-    bookSearchQuery = Book.query.filter(
-        Book.averageRating > minRating).order_by(Book.averageRating.asc()).paginate(page=page, per_page=5, error_out=False)
     return books_schema.dump(bookSearchQuery)
 
 
@@ -282,6 +266,6 @@ def create_token():
 
 
 if __name__ == "__main__":
-    # load_data()
+    #load_data()
     app.run()
 
