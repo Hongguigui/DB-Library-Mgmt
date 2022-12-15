@@ -6,6 +6,7 @@ import Alert from 'react-s-alert-v3';
 import 'react-s-alert-v3/dist/s-alert-default.css';
 import 'react-s-alert-v3/dist/s-alert-css-effects/slide.css';
 import './BookList.css';
+import ReactSlider from 'react-slider';
 import bookService from "../../services/bookService";
 import {
     faEdit,
@@ -18,7 +19,8 @@ import {
     faTimes,
     faWarning,
     faXmarkCircle,
-    faCheckCircle
+    faArrowUp,
+    faArrowDown
 } from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
@@ -34,9 +36,9 @@ class BookList extends Component {
         this.state = {
             books: [],
             currentPage:1,
-            recordPerPage:6,
             search: '',
-            id: ''
+            id: '',
+            minRating: 0
         }
         this.buttonClickedRefreshBookInfo = this.buttonClickedRefreshBookInfo.bind(this);
         this.buttonClickedReRender = this.buttonClickedReRender.bind(this);
@@ -51,46 +53,41 @@ class BookList extends Component {
     // Make the request to the endpoint to retrieve book list, and set the state with the response data
     // The response data is in the pageable format
     getBooksByPagination(currentPage){
-        currentPage=currentPage-1;
-        bookService.getBooks(currentPage, this.state.recordPerPage)
+        bookService.getBooks(currentPage)
         //axios.get("http://localhost:8080/book/?page="+currentPage+"&size="+this.state.recordPerPage)
             .then(response => response.data).then((data) =>{
             this.setState({
-                books:data.content,
-                totalPages:data.totalPages,
-                totalElements: data.totalElements,
-                currentPage: data.number+1
+                books:data,
             });
         });
     }
 
     // Display next page
     showNextPage = () =>{
-        if(this.state.currentPage < Math.ceil(this.state.totalElements/this.state.recordPerPage)){
+        if(this.state.search === ''){
             this.getBooksByPagination(this.state.currentPage + 1);
         }
-    };
-
-    // Display last page
-    showLastPage = () =>{
-        if(this.state.currentPage < Math.ceil(this.state.totalElements/this.state.recordPerPage)){
-            this.getBooksByPagination(Math.ceil(this.state.totalElements/this.state.recordPerPage));
+        else{
+            this.searchBook(this.state.currentPage + 1)
         }
-    };
-
-    // Display first page
-    showFirstPage = ()=>{
-        let firstPage = 1;
-        if(this.state.currentPage > firstPage){
-            this.getBooksByPagination(firstPage);
-        }
+        this.setState({
+            currentPage: this.state.currentPage + 1
+        })
     };
 
     // Display previous page
     showPrevPage = () =>{
         let prevPage = 1
         if(this.state.currentPage > prevPage){
-            this.getBooksByPagination(this.state.currentPage - prevPage);
+            if(this.state.search === ''){
+                this.getBooksByPagination(this.state.currentPage - prevPage);
+            }
+            else{
+                this.searchBook(this.state.currentPage - prevPage)
+            }
+            this.setState({
+                currentPage: this.state.currentPage - 1
+            })
         }
     };
 
@@ -104,23 +101,24 @@ class BookList extends Component {
     // Make the request to the endpoint to retrieve the updated book list using the search input
     // And set the state with the response data
     searchBook = (currentPage) => {
-        currentPage=currentPage-1;
-        bookService.bookSearch(currentPage, this.state.recordPerPage, this.state.search)
+        bookService.bookSearch(currentPage, this.state.search)
         //axios.get("http://localhost:8080/book/"+this.state.search+"?page="+currentPage+"&size="+this.state.recordPerPage)
             .then(response => response.data).then((data) =>{
             this.setState({
-                books:data.content,
-                totalPages:data.totalPages,
-                totalElements: data.totalElements,
-                currentPage: data.number+1
+                books:data
             });
         });
     };
 
     // Reset the search input field and reload the original pagination
-    resetSearch = (currentPage) => {
+    resetSearch = () => {
         this.setState({"search":''});
-        this.getBooksByPagination(this.state.currentPage);
+        this.getBooksByPagination(1);
+    };
+
+    // Set the minimum rating
+    setMinRating = (minRating) => {
+        this.setState({"minRating":minRating});
     };
 
     // Refresh book list when button is clicked
@@ -140,7 +138,7 @@ class BookList extends Component {
         }
         console.log("Render() -> state = %o",this.state);
 
-        const {books, currentPage, totalPages, recordPerPage, search} = this.state;
+        const {books, currentPage, search, minRating} = this.state;
         return (
             <div className="book-container">
                 <h1>Book List</h1>
@@ -157,6 +155,29 @@ class BookList extends Component {
                         </button>
                     </div>
                 </div>
+                <div className="container">
+                    <div style={{float: "none"}}>
+                        <p>Minimum Rating Range</p>
+                        <ReactSlider
+                        className="horizontal-slider"
+                        thumbClassName="thumb"
+                        trackClassName="track"
+                        renderThumb={(props, state) => <div {...props}>{state.valueNow}</div>}
+                        value={minRating}
+                        min={0}
+                        max={5}
+                        step={0.01}
+                        markers={1}
+                        onChange={(value) => {this.setMinRating(value); console.log(value)}}
+                    />
+                        <button type="button" name="search" className="btn btn-info my-2 text-center mr-2"
+                                onClick={this.searchBook}><FontAwesomeIcon icon={faArrowUp} /> Sort by Rating (Asc)
+                        </button>
+                        <button type="button" name="search" className="btn btn-info my-2 text-center mr-2"
+                                onClick={this.searchBook}><FontAwesomeIcon icon={faArrowDown} /> Sort by Rating (Desc)
+                        </button>
+                    </div>
+                </div>
                 {/* The book list part shows the attributes of the books and has the edit buttons */}
                 <div className="container">
                     <table className="table table-bordered border-info">
@@ -166,6 +187,7 @@ class BookList extends Component {
                             <th>Book</th>
                             <th>Authors</th>
                             <th>Categories</th>
+                            <th>Thumbnail</th>
                             <th>Year Published</th>
                             <th>Average Rating</th>
                             <th>Actions</th>
@@ -176,14 +198,20 @@ class BookList extends Component {
                             <tr align="center"><td colSpan="5">No Record Found in Database</td></tr>:
                             books.map(
                                 (books,index) =>(
-                                    <tr key = {books.isbn}>
+                                    <tr key = {books.isbn13}>
+                                        <td>{books.isbn13}</td>
                                         <td>{books.title}</td>
-                                        <td>{books.author}</td>
-                                        <td>{books.catagories}</td>
+                                        <td>{books.authors}</td>
+                                        <td>{books.categories}</td>
+                                        <td><a
+                                            className="App-link"
+                                            href={books.thumbnail}
+                                            target="_blank"
+                                            rel="noopener noreferrer">{"See thumbnail"}</a></td>
                                         <td>{books.yearPublished}</td>
                                         <td>{books.averageRating}</td>
                                         {/* Edit buttons */}
-                                        <td><Link to={`/update-books/${books.id}`} className="btn btn-outline-primary"><FontAwesomeIcon icon={faEdit} /> Edit</Link>
+                                        <td><Link to={`/update-books/${books.isbn13}`} className="btn btn-outline-primary"><FontAwesomeIcon icon={faEdit} /> Borrow</Link>
                                         </td>
                                     </tr>
                                 )
@@ -194,19 +222,15 @@ class BookList extends Component {
                     {/* The pagination part contains a page number display and a button group to navigate to other pages */}
                     <table className="table">
                         <div className="page-number">
-                            Page {currentPage} of {totalPages}
+                            Page {currentPage}
                         </div>
                         <div className="pagination-buttons">
                             <nav>
                                 <ul className="pagination">
-                                    <li className="button"><Button type="button" className="page-link" variant="outline-info" disabled={currentPage === 1} onClick={this.showFirstPage}
-                                                                 ><FontAwesomeIcon icon={faFastBackward} /> First</Button></li>
                                     <li className="button"><Button type="button" className="page-link" variant="outline-info" disabled={currentPage === 1 } onClick={this.showPrevPage}
                                                                  ><FontAwesomeIcon icon={faStepBackward} /> Previous</Button></li>
-                                    <li className="button"><Button type="button" className="page-link" variant="outline-info" disabled={currentPage === totalPages } onClick={this.showNextPage}
+                                    <li className="button"><Button type="button" className="page-link" variant="outline-info" disabled={this.state.books.length !== 10} onClick={this.showNextPage}
                                                                  ><FontAwesomeIcon icon={faStepForward} /> Next</Button></li>
-                                    <li className="button"><Button type="button" className="page-link" variant="outline-info" disabled={currentPage === totalPages} onClick={this.showLastPage}
-                                                                 ><FontAwesomeIcon icon={faFastForward} /> Last</Button></li>
                                 </ul>
                             </nav>
                         </div>
