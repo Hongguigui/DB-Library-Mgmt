@@ -162,8 +162,9 @@ class BookList extends Component {
                         </font>
                         <ReactSlider
                         className="horizontal-slider"
-                        thumbClassName="thumb"
-                        trackClassName="track"
+                        thumbClassName="example-thumb"
+                        trackClassName="example-track"
+                        renderTrack={(props, state) => <div {...props} />}
                         renderThumb={(props, state) => <div {...props}>{state.valueNow}</div>}
                         value={minRating}
                         min={0}
