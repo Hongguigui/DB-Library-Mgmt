@@ -96,7 +96,7 @@ class BorrowBook extends Component {
                             Borrow this book
                         </div>
                         {/* Show a form that allows the user to modify the attributes of the given store */}
-                        <div className="card-body">
+                        <div className="card-body" align="left">
                             <form onSubmit={this.formHandle}>
                                 <div className="form-group">
                                     <label htmlFor="isbnInput" className="font-ch">ISBN13</label>

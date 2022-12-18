@@ -10,6 +10,8 @@
 .card-body {
     display: initial;
     margin-top: 50px;
+    alignment: left;
+    margin-left: 35%;
 }
 
 .card-body input {
@@ -20,7 +22,8 @@
     font-size: 15px;
     padding: 15px;
     height: 25px;
-    width: 200px;
+    width: 300px;
+    margin-left: fill;
 }
 
 .card-body input[type=text]:focus {
