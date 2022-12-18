@@ -204,7 +204,8 @@ class BookList extends Component {
                                             className="App-link"
                                             href={books.thumbnail}
                                             target="_blank"
-                                            rel="noopener noreferrer">{"See thumbnail"}</a></td>
+                                            rel="noopener noreferrer">{"See thumbnail"}
+                                            </a></td>
                                         <td>{books.yearPublished}</td>
                                         <td>{books.averageRating}</td>
                                         {/* Edit buttons */}

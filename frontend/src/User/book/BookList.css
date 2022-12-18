@@ -87,7 +87,7 @@ tr:nth-child(even) {
 }
 
 .example-track.example-track-0 {
-  background: #83a9ff;
+  background: rgba(0, 0, 0, 0.54);
 }
 
 .horizontal-slider .example-track {
