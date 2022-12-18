@@ -392,6 +392,7 @@ def my_profile():
 
     currentUserEID = Employee.query.with_entities(Employee.EID).filter(Employee.UID == UID)
     salary = Salary.query.with_entities(Salary.Salary).filter(Salary.EID == currentUserEID)
+    # currentBranchName = Branch.query.with_entities(Branch.Name).filter(Branch.EID == currentUserEID)
 
     list3 = []
 
@@ -407,7 +408,9 @@ def my_profile():
             "email": email,
             "borrowedNum": borrowedCount,
             "fine": Fine,
-            "salary": "N/A"
+            "salary": "N/A",
+            # "branch": "N/A"
+
         }
         return response_body
 
@@ -418,10 +421,11 @@ def my_profile():
             "email": email,
             "borrowedNum": borrowedCount,
             "fine": Fine,
-            "salary": salary
+            "salary": salary,
+            # "branch": currentBranchName
+
         }
         return response_body
-
 
 
 if __name__ == "__main__":

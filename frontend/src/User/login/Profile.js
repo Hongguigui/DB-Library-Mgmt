@@ -23,7 +23,8 @@ function Profile(prop) {
         email: res.email,
         fine: res.fine,
         borrowedNum: res.borrowedNum,
-        salary:res.salary
+        salary:res.salary,
+        branch:res.branch
       }))
     }).catch((error) => {
       if (error.response) {
@@ -40,7 +41,7 @@ function Profile(prop) {
 
   return (
       <div className="Profile">
-          <h3>User Profile</h3>
+            <h3>User Profile</h3>
           {profileData && <div>
               <Table striped='vertical' bordered hover>
                 <tbody>
@@ -64,10 +65,21 @@ function Profile(prop) {
                     <td>Borrowed book list</td>
                     <td><Button class="btn btn-info" type="submit" variant="info" href="http://localhost:3000/borrowed">Borrowed books</Button></td>
                   </tr>
+                  {(profileData.salary && profileData.salary !== "N/A") &&
+                      <tr>
+                        <td colSpan={2}><h3>Employee Profile</h3></td>
+                      </tr>}
+                  {(profileData.salary && profileData.salary !== "N/A") &&
+                      <tr>
+                        <td>Salary</td>
+                        <td>{profileData.salary}</td>
+                      </tr>
+                  }
+                  {(profileData.salary && profileData.salary !== "N/A") &&
                   <tr>
-                    <td>Salary</td>
-                    <td>{profileData.salary}</td>
-                  </tr>
+                    <td>Branch</td>
+                    <td>{profileData.branch}</td>
+                  </tr>}
                 </tbody>
               </Table>
             </div>
