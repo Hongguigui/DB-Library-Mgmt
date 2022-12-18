@@ -157,7 +157,9 @@ class BookList extends Component {
                 </div>
                 <div className="container">
                     <div style={{float: "none"}}>
-                        <p>Minimum Rating Range</p>
+                        <font color = "white">
+                            <p>Minimum Rating Range</p>
+                        </font>
                         <ReactSlider
                         className="horizontal-slider"
                         thumbClassName="thumb"
@@ -174,7 +176,7 @@ class BookList extends Component {
                 </div>
                 {/* The book list part shows the attributes of the books and has the edit buttons */}
                 <div className="container">
-                    <table className="table table-bordered border-info">
+                    <table className="table table-bordered border-info" align = "center">
                         <thead>
                         <tr>
                             <th>ISBN13</th>
