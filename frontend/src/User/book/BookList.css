@@ -12,7 +12,7 @@
     padding:0 0;
     border:0.1em solid #FFFFFF;
     margin:0 0.3em 0.3em 0;
-    border-radius:0.12em;
+    border-radius:0.1em;
     box-sizing: border-box;
     text-decoration:none;
     font-family:'Roboto',sans-serif;
@@ -50,8 +50,8 @@ table {
 td, th {
     border: 1px solid #dddddd;
     text-align: center;
-    padding: 8px;
-    width: 700px;
+    padding: 1px;
+    width: 10000px;
 }
 h3{
     text-align: center;
@@ -60,25 +60,45 @@ h3{
 tr:nth-child(even) {
     background-color: #dddddd;
 }
+
 .horizontal-slider {
   width: 100%;
-  max-width: 500px;
-  height: 50px;
+  max-width: 700px;
+  height: 40px;
   margin: auto;
 }
-.thumb {
+
+.example-thumb {
   cursor: pointer;
   position: absolute;
   z-index: 100;
-  background: #FFFFFF;
+  background: #ffffff;
   border: 10px solid #FFFFFF;
   border-radius: 50%;
   display: block;
-  box-shadow: 0 0 2px 0 rgb(0 0 0 / 44%);
+  box-shadow: 0 0 2px 0 rgb(0 0 0 / 40%);
+    color: #FFFFFF;
 }
-.thumb.active {
-  background-color: grey;
+
+
+.example-track {
+  position: relative;
+  background: #ddd;
 }
-.track {
-  color: #76d37a;
+
+.example-track.example-track-0 {
+  background: rgba(0, 0, 0, 0.54);
+}
+
+.horizontal-slider .example-track {
+  top: 20px;
+  height: 4px;
+}
+
+.horizontal-slider .example-thumb {
+  top: 12px;
+  width: 10px;
+  outline: none;
+  height: 10px;
+  line-height: 38px;
 }

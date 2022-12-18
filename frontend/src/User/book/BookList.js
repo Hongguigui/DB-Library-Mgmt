@@ -162,8 +162,9 @@ class BookList extends Component {
                         </font>
                         <ReactSlider
                         className="horizontal-slider"
-                        thumbClassName="thumb"
-                        trackClassName="track"
+                        thumbClassName="example-thumb"
+                        trackClassName="example-track"
+                        renderTrack={(props, state) => <div {...props} />}
                         renderThumb={(props, state) => <div {...props}>{state.valueNow}</div>}
                         value={minRating}
                         min={0}
@@ -203,7 +204,8 @@ class BookList extends Component {
                                             className="App-link"
                                             href={books.thumbnail}
                                             target="_blank"
-                                            rel="noopener noreferrer">{"See thumbnail"}</a></td>
+                                            rel="noopener noreferrer">{"See thumbnail"}
+                                            </a></td>
                                         <td>{books.yearPublished}</td>
                                         <td>{books.averageRating}</td>
                                         {/* Edit buttons */}
