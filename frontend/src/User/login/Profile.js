@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import axios from "axios";
+import {Button} from "react-bootstrap";
 
 function Profile(prop) {
 
@@ -16,8 +17,8 @@ function Profile(prop) {
       const res =response.data
       res.access_token && prop.setToken(res.access_token)
       setProfileData(({
-        profile_name: res.name,
-        about_me: res.about}))
+        UID: res.UID,
+        borrowed: res.borrowed}))
     }).catch((error) => {
       if (error.response) {
         console.log(error.response)
@@ -26,17 +27,18 @@ function Profile(prop) {
         }
     })}
 
+  useEffect(() => {
+    getData();
+    console.log("Profile loaded.");
+  }, [""]);
+
   return (
-    <div className="Profile">
-
-        <p>To get your profile details: </p><button onClick={getData}>Click me</button>
-        {profileData && <div>
-              <p>Profile name: {profileData.profile_name}</p>
-              <p>About me: {profileData.about_me}</p>
-            </div>
-        }
-
-    </div>
+      <div className="Profile">
+          <h3>User Profile</h3>
+          <p>UID: {profileData.UID}</p>
+          <p>Book borrowed: {profileData.borrowed}</p>
+          <Button class="btn btn-info" type="submit" variant="outline-primary" size="lg">Borrowed books</Button>
+      </div>
   );
 }
 

@@ -64,10 +64,11 @@ def load_data():
 
 
 	# Convert dataframe to sql table
-	# branch_df.to_sql('branch', engine, index=False)
-	# employee_df.to_sql('employee', engine, index=False)
-	# salary_df.to_sql('salary', engine, index=False)
-	# users_df.to_sql('user', engine, index=False)
+	book_df.to_sql('books', engine, index=False)
+	branch_df.to_sql('branch', engine, index=False)
+	employee_df.to_sql('employee', engine, index=False)
+	salary_df.to_sql('salary', engine, index=False)
+	users_df.to_sql('user', engine, index=False)
 	borrows_df.to_sql('borrows', engine, index=False)
 
 
