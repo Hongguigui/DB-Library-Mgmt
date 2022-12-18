@@ -159,7 +159,7 @@ class BookSchema(ma.Schema):
 
 class BorrowSchema(ma.Schema):
     class Meta(ModelSchema.Meta):
-        fields = ("borrowsID", "isbn13", "UID", "timeLeft", "late", "title", "authors")
+        fields = ("borrowsID", "isbn13", "UID", "timeLeft", "late")
 
 
 book_schema = BookSchema()
@@ -317,11 +317,12 @@ def checkBorrows():
     for row in currentUserUID:
         list1.append([x for x in row])
     UID = list1[0][0]
-    print(UID)
+    # print(UID)
 
     # UID = 10004
     # borrowedList = Borrows.query.join(Book).add_columns(Borrows.ISBN,Borrows.timeLeft,Book.title,Book.authors).filter(Borrows.UID = UID).paginate(page=page,per_page=5,error_out=False)
-    borrowedList = Borrows.query.join(Book).add_columns(Borrows.isbn13, Borrows.timeLeft, Book.title, Book.authors).filter(Borrows.UID == UID).paginate(page=page, per_page=10, error_out=False)
+    borrowedList = Borrows.query.filter(Borrows.UID == UID).paginate(page=page, per_page=10, error_out=False)
+    # borrowedList = Borrows.query.filter(Borrows.UID == UID).paginate(page=page, per_page=10, error_out=False)
     # borrowedList = Borrows.query.paginate(page=page, per_page=10, error_out=False)
     return borrows_schema.dump(borrowedList)
 

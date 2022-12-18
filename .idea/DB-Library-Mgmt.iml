@@ -5,7 +5,7 @@
       <sourceFolder url="file://$MODULE_DIR$/venv" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/env" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="Python 3.9 (DB-Library-Mgmt)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="TemplatesService">
