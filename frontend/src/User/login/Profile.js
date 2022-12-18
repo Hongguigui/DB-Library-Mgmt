@@ -21,7 +21,7 @@ function Profile(prop) {
       setProfileData(({
         UID: res.UID,
         email: res.email,
-        fine: res.email,
+        fine: res.fine,
         borrowedNum: res.borrowedNum
       }))
     }).catch((error) => {
@@ -41,19 +41,19 @@ function Profile(prop) {
       <div className="Profile">
           <h3>User Profile</h3>
           {profileData && <div>
-              <Table>
+              <Table striped='vertical' bordered hover>
                 <tbody>
                   <tr>
                     <th>UID</th>
                     <th>{profileData.UID}</th>
                   </tr>
                   <tr>
-                    <td>Book borrowed</td>
+                    <td>User email</td>
                     <td>{profileData.email}</td>
                   </tr>
                   <tr>
                     <td>Current fine</td>
-                    <td>{profileData.fine}</td>
+                    <td>${profileData.fine}</td>
                   </tr>
                   <tr>
                     <td>Borrowed book count</td>

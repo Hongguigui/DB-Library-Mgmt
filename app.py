@@ -382,7 +382,7 @@ def my_profile():
     response_body = {
         "UID": UID,
         "email": email,
-        "books borrowed": borrowedCount,
+        "borrowedNum": borrowedCount,
         "fine": Fine
     }
     return response_body
