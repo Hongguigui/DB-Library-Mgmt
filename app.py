@@ -359,9 +359,14 @@ def returnBook():
 @app.route('/profile')
 @jwt_required()
 def my_profile():
+    currentUserUID = User.query.with_entities(User.UID).filter(User.Email == get_jwt_identity())
+    list1 = []
+    for row in currentUserUID:
+        list1.append([x for x in row])
+    UID = list1[0][0]
     response_body = {
-        "name": "Nagato",
-        "about": "Hello! I'm a full stack developer that loves python and javascript"
+        "UID": UID,
+        "email": "Hello! I'm a full stack developer that loves python and javascript"
     }
     return response_body
 
