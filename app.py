@@ -378,26 +378,28 @@ def my_profile():
     list1 = []
     for row in currentUserUID:
         list1.append([x for x in row])
-    print(list1)
+    # print(list1)
     UID = list1[0][0]
     Fine = list1[0][1]
 
     list2 = []
     for row in currentUserEmail:
         list2.append([x for x in row])
-    print(list1)
+    # print(list1)
     email = list2[0][0]
 
     # UID = 10005
 
     currentUserEID = Employee.query.with_entities(Employee.EID).filter(Employee.UID == UID)
     salary = Salary.query.with_entities(Salary.Salary).filter(Salary.EID == currentUserEID)
-    # currentBranchName = Branch.query.with_entities(Branch.Name).filter(Branch.EID == currentUserEID)
+    currentBranchName = Branch.query.with_entities(Branch.Name).filter(Branch.EID == currentUserEID)
 
     list3 = []
-
+    list4 = []
     for row in salary:
         list3.append([x for x in row])
+    for row in currentBranchName:
+        list4.append([x for x in row])
 
     borrowedCount = Borrows.query.filter(Borrows.UID == UID).count()
 
@@ -409,20 +411,21 @@ def my_profile():
             "borrowedNum": borrowedCount,
             "fine": Fine,
             "salary": "N/A",
-            # "branch": "N/A"
+            "branch": "N/A"
 
         }
         return response_body
 
     else:
         salary = list3[0][0]
+        currentBranchName = list4[0][0]
         response_body = {
             "UID": UID,
             "email": email,
             "borrowedNum": borrowedCount,
             "fine": Fine,
             "salary": salary,
-            # "branch": currentBranchName
+            "branch": currentBranchName
 
         }
         return response_body

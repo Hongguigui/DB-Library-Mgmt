@@ -41,10 +41,12 @@ function Profile(prop) {
 
   return (
       <div className="Profile">
-            <h3>User Profile</h3>
           {profileData && <div>
               <Table striped='vertical' bordered hover>
                 <tbody>
+                <tr>
+                  <td colSpan={2}><h3>User Profile</h3></td>
+                </tr>
                   <tr>
                     <th>UID</th>
                     <th>{profileData.UID}</th>
