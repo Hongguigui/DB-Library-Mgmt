@@ -139,6 +139,13 @@ class Borrows(db.Model):
         db.session.commit()
         return self
 
+    def __init__(self, borrowsID, isbn13, UID, timeLeft, late):
+        self.borrowsID = borrowsID
+        self.isbn13 = isbn13
+        self.UID = UID
+        self.timeLeft = timeLeft
+        self.late = late
+
     def __repr__(self):
         return '' % self.borrowsID
 
@@ -327,34 +334,38 @@ def checkBorrows():
     return borrows_schema.dump(borrowedList)
 
 
-@app.route("/checkout",methods=['POST'])
-@jwt_required()
+@app.route("/checkout", methods=['POST'])
+# @jwt_required()
 def borrowBook():
     isbn = request.json.get("isbn", None)
-    currentUserUID = User.query.with_entities(User.UID).filter(User.Email == get_jwt_identity())
-    list1 = []
-    for row in currentUserUID:
-        list1.append([x for x in row])
-    UID = list1[0][0]
-    newBorrow = Borrows(0, isbn, UID, 21, 0)
+    UID = request.json.get("UID", None)
+    # currentUserUID = User.query.with_entities(User.UID).filter(User.Email == get_jwt_identity())
+    # list1 = []
+    # for row in currentUserUID:
+    #     list1.append([x for x in row])
+    # UID = list1[0][0]
+    borrowCount = Borrows.query.count()
+    count = borrowCount + 1
+    newBorrow = Borrows(count, isbn, UID, 21, 0)
     db.session.add(newBorrow)
-    db.commit()
+    db.session.commit()
     app.logger.info(newBorrow.borrowsID)
-    return 1
+    return 'OK'
 
 
-@app.route("/return",methods=['POST'])
-@jwt_required()
+@app.route("/return", methods=['POST'])
+# @jwt_required()
 def returnBook():
     isbn = request.json.get("isbn", None)
-    currentUserUID = User.query.with_entities(User.UID).filter(User.Email == get_jwt_identity())
-    list1 = []
-    for row in currentUserUID:
-        list1.append([x for x in row])
-    UID = list1[0][0]
+    UID = request.json.get("UID", None)
+    # currentUserUID = User.query.with_entities(User.UID).filter(User.Email == get_jwt_identity())
+    # list1 = []
+    # for row in currentUserUID:
+    #     list1.append([x for x in row])
+    # UID = list1[0][0]
     Borrows.query.filter((Borrows.UID == UID) & (Borrows.isbn13 == isbn)).delete()
     db.session.commit()
-    return 1
+    return 'OK'
 
 
 @app.route('/profile')
@@ -363,6 +374,7 @@ def my_profile():
     page = request.args.get('page', 1, type=int)
     currentUserUID = User.query.with_entities(User.UID, User.Fine).filter(User.Email == get_jwt_identity())
     currentUserEmail = User.query.with_entities(User.Email).filter(User.Email == get_jwt_identity())
+
     list1 = []
     for row in currentUserUID:
         list1.append([x for x in row])
@@ -370,15 +382,47 @@ def my_profile():
     UID = list1[0][0]
     Fine = list1[0][1]
 
-
     list2 = []
     for row in currentUserEmail:
         list2.append([x for x in row])
     print(list1)
     email = list2[0][0]
 
+    # UID = 10005
+
+    currentUserEID = Employee.query.with_entities(Employee.EID).filter(Employee.UID == UID)
+    salary = Salary.query.with_entities(Salary.Salary).filter(Salary.EID == currentUserEID)
+
+    list3 = []
+
+    for row in salary:
+        list3.append([x for x in row])
+
     borrowedCount = Borrows.query.filter(Borrows.UID == UID).count()
 
+<<<<<<< HEAD
+    if len(list3) == 0:
+        response_body = {
+            "UID": UID,
+            "email": email,
+            "books borrowed": borrowedCount,
+            "fine": Fine,
+            "Salary": "N/A"
+        }
+        return response_body
+
+    else:
+        salary = list3[0][0]
+        response_body = {
+            "UID": UID,
+            "email": email,
+            "books borrowed": borrowedCount,
+            "fine": Fine,
+            "Salary": salary
+        }
+        return response_body
+
+=======
     response_body = {
         "UID": UID,
         "email": email,
@@ -386,6 +430,7 @@ def my_profile():
         "fine": Fine
     }
     return response_body
+>>>>>>> cf4477c58306b257136b51598602c1340aef1e16
 
 if __name__ == "__main__":
     # load_data()
