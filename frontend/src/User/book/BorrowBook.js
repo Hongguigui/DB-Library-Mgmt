@@ -5,9 +5,18 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Button} from "react-bootstrap";
 import './BorrowBook.css';
 import Alert from 'react-s-alert-v3';
+import {useParams} from "react-router-dom";
 
 //Reference: https://codebun.com/crud-operation-with-react-js-spring-boot-restapi-and-mysql/
 //Edited by Xiao Lin
+
+//Reference: https://stackoverflow.com/questions/64782949/how-to-pass-params-into-link-using-react-router-v6
+export function withRouter(Children){
+     return(props)=>{
+        const match  = {params: useParams()};
+        return <Children {...props}  match = {match}/>
+        }
+     }
 
 // This component is used to update the attribute of existing stores
 class BorrowBook extends Component {
@@ -30,8 +39,8 @@ class BorrowBook extends Component {
         if(isbn13 > 0){
             this.getBookById(isbn13);
         }
-
     }
+
     // Retrieve the current store attributes using its id, and set it to state
     getBookById = (isbn13) =>{
         bookService.getById(isbn13).then
@@ -52,13 +61,6 @@ class BorrowBook extends Component {
                 Alert.error("Operation failed!");
             }
         );
-    }
-
-    // When form field input changes, assign value to event target
-    onInputChange = event => {
-        this.setState({
-            [event.target.name]:event.target.value
-        });
     }
 
     // After submitting the form, set the current state as the attribute of the object and post it to the backend
@@ -144,4 +146,4 @@ class BorrowBook extends Component {
         )
     }
 }
-export default BorrowBook
+export default withRouter(BorrowBook)

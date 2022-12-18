@@ -2,6 +2,7 @@
 // Edited by Xiao Lin
 import { useState } from 'react';
 import axios from "axios";
+import {Button} from "react-bootstrap";
 
 function Login(props) {
 
@@ -59,7 +60,7 @@ function Login(props) {
                   placeholder="Password"
                   value={loginForm.password} />
 
-          <button onClick={logMeIn}>Submit</button>
+          <Button type="submit" variant="primary" onClick={logMeIn}>Submit</Button>
         </form>
       </div>
     );
