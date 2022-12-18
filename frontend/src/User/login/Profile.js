@@ -35,8 +35,11 @@ function Profile(prop) {
   return (
       <div className="Profile">
           <h3>User Profile</h3>
-          <p>UID: {profileData.UID}</p>
-          <p>Book borrowed: {profileData.borrowed}</p>
+          {profileData && <div>
+              <p>UID: {profileData.UID}</p>
+              <p>Book borrowed: {profileData.borrowed}</p>
+            </div>
+          }
           <Button class="btn btn-info" type="submit" variant="outline-primary" size="lg">Borrowed books</Button>
       </div>
   );
