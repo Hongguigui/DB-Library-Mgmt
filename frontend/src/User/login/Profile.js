@@ -61,7 +61,7 @@ function Profile(prop) {
                   </tr>
                   <tr>
                     <td>Borrowed book list</td>
-                    <td><Button class="btn btn-info" type="submit" variant="info">Borrowed books</Button></td>
+                    <td><Button class="btn btn-info" type="submit" variant="info" href="http://localhost:3000/borrowed">Borrowed books</Button></td>
                   </tr>
                 </tbody>
               </Table>

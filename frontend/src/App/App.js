@@ -12,6 +12,7 @@ import useToken from "../User/login/useToken";
 import Login from "../User/login/Login";
 import BorrowBook from "../User/book/BorrowBook";
 import Profile from "../User/login/Profile";
+import BorrowedBook from "../User/book/BorrowedBookList";
 
 // Edited by Xiao Lin
 // Render the app, which has a header and a body
@@ -33,6 +34,7 @@ function App() {
                                 <Route exact path="/book" element={<BookList/>}/>
                                 <Route exact path="/borrow/:id" element={<BorrowBook/>}/>
                                 <Route exact path="/profile" element={<Profile token={token} setToken={setToken}/>}/>
+                                <Route exact path="/borrowed" element={<BorrowedBook token={token} setToken={setToken}/>}/>
                                 <Route element={<NotFound/>}/>
                             </Routes>
                         )}
