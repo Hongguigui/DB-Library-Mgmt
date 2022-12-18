@@ -6,7 +6,7 @@ import 'react-s-alert-v3/dist/s-alert-css-effects/slide.css';
 import AppHeader from "../common/header";
 import Home from '../home/Home';
 import NotFound from '../common/NotFound';
-import {Route, Routes, BrowserRouter} from "react-router-dom";
+import {Route, Routes} from "react-router-dom";
 import BookList from "../User/book/BookList";
 import useToken from "../User/login/useToken";
 import Login from "../User/login/Login";

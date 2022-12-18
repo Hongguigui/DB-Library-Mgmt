@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App/App';
 import { BrowserRouter as Router } from 'react-router-dom';
+import './bootstrap.min.css';
 
 //Reference: exempli-gratia
 //Edited by Xiao Lin
