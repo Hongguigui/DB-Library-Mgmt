@@ -361,13 +361,15 @@ def returnBook():
 @jwt_required()
 def my_profile():
     page = request.args.get('page', 1, type=int)
-    currentUserUID = User.query.with_entities(User.UID).filter(User.Email == get_jwt_identity())
+    currentUserUID = User.query.with_entities(User.UID, User.Fine).filter(User.Email == get_jwt_identity())
     currentUserEmail = User.query.with_entities(User.Email).filter(User.Email == get_jwt_identity())
     list1 = []
     for row in currentUserUID:
         list1.append([x for x in row])
     print(list1)
     UID = list1[0][0]
+    Fine = list1[0][1]
+
 
     list2 = []
     for row in currentUserEmail:
@@ -376,12 +378,12 @@ def my_profile():
     email = list2[0][0]
 
     borrowedCount = Borrows.query.filter(Borrows.UID == UID).count()
-    print(borrowedCount)
 
     response_body = {
         "UID": UID,
         "email": email,
-        "books borrowed": borrowedCount
+        "books borrowed": borrowedCount,
+        "fine": Fine
     }
     return response_body
 
