@@ -22,7 +22,8 @@ function Profile(prop) {
         UID: res.UID,
         email: res.email,
         fine: res.fine,
-        borrowedNum: res.borrowedNum
+        borrowedNum: res.borrowedNum,
+        salary:res.salary
       }))
     }).catch((error) => {
       if (error.response) {
@@ -62,6 +63,10 @@ function Profile(prop) {
                   <tr>
                     <td>Borrowed book list</td>
                     <td><Button class="btn btn-info" type="submit" variant="info" href="http://localhost:3000/borrowed">Borrowed books</Button></td>
+                  </tr>
+                  <tr>
+                    <td>Salary</td>
+                    <td>{profileData.salary}</td>
                   </tr>
                 </tbody>
               </Table>

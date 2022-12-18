@@ -405,9 +405,9 @@ def my_profile():
         response_body = {
             "UID": UID,
             "email": email,
-            "books borrowed": borrowedCount,
+            "borrowedNum": borrowedCount,
             "fine": Fine,
-            "Salary": "N/A"
+            "salary": "N/A"
         }
         return response_body
 
@@ -416,9 +416,9 @@ def my_profile():
         response_body = {
             "UID": UID,
             "email": email,
-            "books borrowed": borrowedCount,
+            "borrowedNum": borrowedCount,
             "fine": Fine,
-            "Salary": salary
+            "salary": salary
         }
         return response_body
 
