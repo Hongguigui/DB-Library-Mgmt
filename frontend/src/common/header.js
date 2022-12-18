@@ -41,6 +41,9 @@ function AppHeader(props) {
                                     <NavLink to="/book">Book List</NavLink>
                                 </li>
                                 <li>
+                                    <NavLink to="/profile">Profile</NavLink>
+                                </li>
+                                <li>
                                     <a
                                         className="App-link"
                                         href="https://github.com/Hongguigui/DB-Library-Mgmt"

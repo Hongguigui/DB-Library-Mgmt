@@ -6,11 +6,12 @@ import 'react-s-alert-v3/dist/s-alert-css-effects/slide.css';
 import AppHeader from "../common/header";
 import Home from '../home/Home';
 import NotFound from '../common/NotFound';
-import {Route, Switch, BrowserRouter} from "react-router-dom";
+import {Route, Routes, BrowserRouter} from "react-router-dom";
 import BookList from "../User/book/BookList";
 import useToken from "../User/login/useToken";
 import Login from "../User/login/Login";
 import BorrowBook from "../User/book/BorrowBook";
+import Profile from "../User/login/Profile";
 
 // Edited by Xiao Lin
 // Render the app, which has a header and a body
@@ -27,12 +28,13 @@ function App() {
                     {!token && token!=="" &&token!== undefined?
                         <Login setToken={setToken} />
                         :(
-                            <Switch>
-                                <Route exact path="/" component={Home}/>
-                                <Route exact path="/book" component={BookList}/>
-                                <Route exact path="/borrow/:id" component={BorrowBook}/>
-                                <Route component={NotFound}/>
-                            </Switch>
+                            <Routes>
+                                <Route exact path="/" element={<Home/>}/>
+                                <Route exact path="/book" element={<BookList/>}/>
+                                <Route exact path="/borrow/:id" element={<BorrowBook/>}/>
+                                <Route exact path="/profile" element={<Profile token={token} setToken={setToken}/>}/>
+                                <Route element={<NotFound/>}/>
+                            </Routes>
                         )}
                 </div>
                 <Alert stack={{limit: 3}}
