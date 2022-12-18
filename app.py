@@ -400,7 +400,7 @@ def my_profile():
 
     borrowedCount = Borrows.query.filter(Borrows.UID == UID).count()
 
-<<<<<<< HEAD
+
     if len(list3) == 0:
         response_body = {
             "UID": UID,
@@ -422,15 +422,7 @@ def my_profile():
         }
         return response_body
 
-=======
-    response_body = {
-        "UID": UID,
-        "email": email,
-        "borrowedNum": borrowedCount,
-        "fine": Fine
-    }
-    return response_body
->>>>>>> cf4477c58306b257136b51598602c1340aef1e16
+
 
 if __name__ == "__main__":
     # load_data()
