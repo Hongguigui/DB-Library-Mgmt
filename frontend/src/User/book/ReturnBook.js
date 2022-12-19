@@ -5,7 +5,8 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Button} from "react-bootstrap";
 import './BorrowBook.css';
 import Alert from 'react-s-alert-v3';
-import {useParams} from "react-router-dom";
+import {useParams } from "react-router-dom";
+
 
 //Reference: https://codebun.com/crud-operation-with-react-js-spring-boot-restapi-and-mysql/
 //Edited by Xiao Lin
@@ -19,7 +20,7 @@ export function withRouter(Children){
      }
 
 // This component is used to update the attribute of existing stores
-class BorrowBook extends Component {
+class ReturnBook extends Component {
     constructor(props){
         super(props);
         this.state = {
@@ -67,10 +68,10 @@ class BorrowBook extends Component {
     // After submitting the form, and post the isbn and token to the backend
     formHandle = event =>{
         event.preventDefault();
-        bookService.borrow(this.state.isbn13, this.state.token).then(
+        bookService.return(this.state.isbn13, this.state.token).then(
             (response) =>{
                 console.log(response);
-                Alert.success("Book borrowed!");
+                Alert.success("Book returned!");
             } ,(error) =>{
                 console.log(error);
                 Alert.error("Invalid input!");
@@ -85,9 +86,9 @@ class BorrowBook extends Component {
                 <div className="container">
                     <div className="card shadow bg-transparent">
                         <div className="card-header card-font">
-                            Borrow this book
+                            Return this book
                         </div>
-                        {/* Show a form that contains the book info*/}
+                        {/* Show a form that contains the book info */}
                         <div className="card-body" align="left">
                             <form onSubmit={this.formHandle}>
                                 <div className="form-group">
@@ -111,11 +112,6 @@ class BorrowBook extends Component {
                                            placeholder={categories} value={categories} autoComplete="off" disabled={true}/>
                                 </div>
                                 <div className="form-group">
-                                    <label htmlFor="thumbnailInput" className="font-ch">Thumbnail</label>
-                                    <input type="text" className="form-control" name="thumbnail"
-                                           placeholder={thumbnail} value={thumbnail} autoComplete="off" disabled={true}/>
-                                </div>
-                                <div className="form-group">
                                     <label htmlFor="yearPublishedInput" className="font-ch">Year Published</label>
                                     <input type="text" className="form-control" name="yearPublished"
                                            placeholder={yearPublished} value={yearPublished} autoComplete="off" disabled={true}/>
@@ -125,10 +121,10 @@ class BorrowBook extends Component {
                                     <input type="text" className="form-control" name="averageRating"
                                            placeholder={averageRating} value={averageRating} autoComplete="off" disabled={true}/>
                                 </div>
-                                {/* Display two buttons, one is the submission button, one is the return to book list button */}
+                                {/* Display two buttons, one is the submission button, one is the return to borrowed book list button */}
                                 <div className="button-group">
-                                    <Button class="btn btn-info" type="submit" variant="outline-primary"><FontAwesomeIcon icon={faUpload} /> Borrow</Button>
-                                    <Button class="btn btn-info" type="button" variant="outline-success" href="http://localhost:3000/book"><FontAwesomeIcon icon={faRotateBack} /> Back</Button>
+                                    <Button class="btn btn-info" type="submit" variant="outline-primary"><FontAwesomeIcon icon={faUpload} /> Return</Button>
+                                    <Button class="btn btn-info" type="button" variant="outline-success" href="http://localhost:3000/borrowed/"><FontAwesomeIcon icon={faRotateBack} /> Back</Button>
                                 </div>
                             </form>
                         </div>
@@ -138,4 +134,4 @@ class BorrowBook extends Component {
         )
     }
 }
-export default withRouter(BorrowBook)
+export default withRouter(ReturnBook)

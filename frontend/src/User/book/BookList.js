@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import { Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import LoadingIndicator from '../../common/LoadingIndicator';
-import Alert from 'react-s-alert-v3';
 import 'react-s-alert-v3/dist/s-alert-default.css';
 import 'react-s-alert-v3/dist/s-alert-css-effects/slide.css';
 import './BookList.css';
@@ -10,17 +9,10 @@ import ReactSlider from 'react-slider';
 import bookService from "../../services/bookService";
 import {
     faEdit,
-    faTrash,
     faStepBackward,
-    faFastBackward,
     faStepForward,
-    faFastForward,
     faSearch,
-    faTimes,
-    faWarning,
-    faXmarkCircle,
-    faArrowUp,
-    faArrowDown
+    faTimes
 } from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
@@ -54,7 +46,6 @@ class BookList extends Component {
     // The response data is in the pageable format
     getBooksByPagination(currentPage){
         bookService.getBooks(currentPage)
-        //axios.get("http://localhost:8080/book/?page="+currentPage+"&size="+this.state.recordPerPage)
             .then(response => response.data).then((data) =>{
             this.setState({
                 books:data,
@@ -102,7 +93,6 @@ class BookList extends Component {
     // And set the state with the response data
     searchBook = (currentPage) => {
         bookService.bookSearch(currentPage, this.state.minRating, this.state.search)
-        //axios.get("http://localhost:8080/book/"+this.state.search+"?page="+currentPage+"&size="+this.state.recordPerPage)
             .then(response => response.data).then((data) =>{
             this.setState({
                 books:data
@@ -175,7 +165,7 @@ class BookList extends Component {
                     />
                     </div>
                 </div>
-                {/* The book list part shows the attributes of the books and has the edit buttons */}
+                {/* The book list part shows the attributes of the books and has the borrow buttons */}
                 <div className="container">
                     <table className="table table-bordered border-info" align = "center">
                         <thead>
@@ -208,7 +198,7 @@ class BookList extends Component {
                                             </a></td>
                                         <td>{books.yearPublished}</td>
                                         <td>{books.averageRating}</td>
-                                        {/* Edit buttons */}
+                                        {/* Borrow buttons */}
                                         <td><Link to={`/borrow/${books.isbn13}`} className="btn btn-outline-primary"><FontAwesomeIcon icon={faEdit} /> Borrow</Link>
                                         </td>
                                     </tr>
