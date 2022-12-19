@@ -75,7 +75,7 @@ function BorrowedBook(prop) {
                                     <tr key = {books.isbn13}>
                                         <td>{books.isbn13}</td>
                                         <td>{books.late ? 'Yes':'No'}</td>
-                                        <td>{books.timeLeft} day</td>
+                                        <td>{books.timeLeft >= 0 ? (books.timeLeft+' day') : (-books.timeLeft+' day overdue')}</td>
                                         {/* Submit buttons */}
                                         <td>
                                           <Link to={`/return/${books.isbn13}`} className="btn btn-info"><FontAwesomeIcon icon={faEdit} /> Return</Link>
