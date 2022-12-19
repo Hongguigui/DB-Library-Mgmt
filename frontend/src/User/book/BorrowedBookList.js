@@ -6,6 +6,7 @@ import {Button, Table} from "react-bootstrap";
 import {Link} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEdit, faStepBackward, faStepForward} from "@fortawesome/free-solid-svg-icons";
+import './BookList.css';
 
 let currentPage = 1
 function BorrowedBook(prop) {
@@ -61,8 +62,8 @@ function BorrowedBook(prop) {
                         <thead>
                         <tr>
                             <th>ISBN13</th>
-                            <th>Late</th>
-                            <th>Time left</th>
+                            <th>Late?</th>
+                            <th>Time left before due</th>
                             <th>Actions</th>
                         </tr>
                         </thead>
@@ -74,9 +75,10 @@ function BorrowedBook(prop) {
                                     <tr key = {books.isbn13}>
                                         <td>{books.isbn13}</td>
                                         <td>{books.late ? 'Yes':'No'}</td>
-                                        <td>{books.timeLeft}</td>
-                                        {/* Edit buttons */}
-                                        <td><Button className="submit" variant="info"><FontAwesomeIcon icon={faEdit} /> Return</Button>
+                                        <td>{books.timeLeft} day</td>
+                                        {/* Submit buttons */}
+                                        <td>
+                                          <Link to={`/return/${books.isbn13}`} className="btn btn-info"><FontAwesomeIcon icon={faEdit} /> Return</Link>
                                         </td>
                                     </tr>
                                 )

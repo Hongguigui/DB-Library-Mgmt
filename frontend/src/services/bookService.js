@@ -23,6 +23,11 @@ class bookService{
                 headers: {Authorization: 'Bearer ' + token}
         })
     }
+    return = (isbn13, token) =>{
+        return axios.post(`${apiUrlPrefix}/return`, {isbn: isbn13}, {
+                headers: {Authorization: 'Bearer ' + token}
+        })
+    }
 
 }
 

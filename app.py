@@ -354,15 +354,15 @@ def borrowBook():
 
 
 @app.route("/return", methods=['POST'])
-# @jwt_required()
+@jwt_required()
 def returnBook():
     isbn = request.json.get("isbn", None)
-    UID = request.json.get("UID", None)
-    # currentUserUID = User.query.with_entities(User.UID).filter(User.Email == get_jwt_identity())
-    # list1 = []
-    # for row in currentUserUID:
-    #     list1.append([x for x in row])
-    # UID = list1[0][0]
+    # UID = request.json.get("UID", None)
+    currentUserUID = User.query.with_entities(User.UID).filter(User.Email == get_jwt_identity())
+    list1 = []
+    for row in currentUserUID:
+        list1.append([x for x in row])
+    UID = list1[0][0]
     Borrows.query.filter((Borrows.UID == UID) & (Borrows.isbn13 == isbn)).delete()
     db.session.commit()
     return 'OK'
