@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import axios from "axios";
 import {Button} from "react-bootstrap";
+import Alert from 'react-s-alert-v3';
 
 function Login(props) {
 
@@ -22,8 +23,11 @@ function Login(props) {
       })
       .then((response) => {
         props.setToken(response.data.access_token)
+        console.log(response);
+        Alert.success("Login successful!");
       }).catch((error) => {
         if (error.response) {
+          Alert.error("Login failed!");
           console.log(error.response)
           console.log(error.response.status)
           console.log(error.response.headers)
