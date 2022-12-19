@@ -18,9 +18,12 @@ class bookService{
     getById = isbn13 =>{
         return axios.get(`${apiUrlPrefix}/search/books/isbn/${isbn13}`)
     }
-    update = (isbn13,data) =>{
-        return axios.put(`${apiUrlPrefix}${isbn13}`, data)
+    borrow = (isbn13, token) =>{
+        return axios.post(`${apiUrlPrefix}/checkout`, {isbn: isbn13}, {
+                headers: {Authorization: 'Bearer ' + token}
+        })
     }
+
 }
 
 export default new bookService();

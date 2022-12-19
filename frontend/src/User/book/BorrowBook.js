@@ -13,7 +13,7 @@ import {useParams} from "react-router-dom";
 //Reference: https://stackoverflow.com/questions/64782949/how-to-pass-params-into-link-using-react-router-v6
 export function withRouter(Children){
      return(props)=>{
-        const match  = {params: useParams()};
+        const match = {params: useParams()};
         return <Children {...props}  match = {match}/>
         }
      }
@@ -23,6 +23,7 @@ class BorrowBook extends Component {
     constructor(props){
         super(props);
         this.state = {
+            token: props.token,
             isbn13:'',
             title:'',
             authors:'',
@@ -66,19 +67,10 @@ class BorrowBook extends Component {
     // After submitting the form, set the current state as the attribute of the object and post it to the backend
     formHandle = event =>{
         event.preventDefault();
-        const book = {
-            isbn13:this.state.isbn13,
-            title:this.state.title,
-            authors:this.state.authors,
-            categories:this.state.categories,
-            thumbnail:this.state.thumbnail,
-            yearPublished:this.state.yearPublished,
-            averageRating:this.state.averageRating
-        } ;
-        bookService.update(this.state.isbn13,book).then(
+        bookService.borrow(this.state.isbn13, this.state.token).then(
             (response) =>{
                 console.log(response);
-                Alert.success("Store info updated!");
+                Alert.success("Book borrowed!");
             } ,(error) =>{
                 console.log(error);
                 Alert.error("Invalid input!");

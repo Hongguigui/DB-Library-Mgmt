@@ -32,7 +32,7 @@ function App() {
                             <Routes>
                                 <Route exact path="/" element={<Home/>}/>
                                 <Route exact path="/book" element={<BookList/>}/>
-                                <Route exact path="/borrow/:id" element={<BorrowBook/>}/>
+                                <Route exact path="/borrow/:id" element={<BorrowBook token={token} setToken={setToken}/>}/>
                                 <Route exact path="/profile" element={<Profile token={token} setToken={setToken}/>}/>
                                 <Route exact path="/borrowed" element={<BorrowedBook token={token} setToken={setToken}/>}/>
                                 <Route element={<NotFound/>}/>

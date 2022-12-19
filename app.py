@@ -335,15 +335,15 @@ def checkBorrows():
 
 
 @app.route("/checkout", methods=['POST'])
-# @jwt_required()
+@jwt_required()
 def borrowBook():
     isbn = request.json.get("isbn", None)
-    UID = request.json.get("UID", None)
-    # currentUserUID = User.query.with_entities(User.UID).filter(User.Email == get_jwt_identity())
-    # list1 = []
-    # for row in currentUserUID:
-    #     list1.append([x for x in row])
-    # UID = list1[0][0]
+    # UID = request.json.get("UID", None)
+    currentUserUID = User.query.with_entities(User.UID).filter(User.Email == get_jwt_identity())
+    list1 = []
+    for row in currentUserUID:
+        list1.append([x for x in row])
+    UID = list1[0][0]
     borrowCount = Borrows.query.count()
     count = borrowCount + 1
     newBorrow = Borrows(count, isbn, UID, 21, 0)
